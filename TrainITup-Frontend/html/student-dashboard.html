@@ -1,0 +1,655 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Hub | TrainITup</title>
+    
+    <script>
+        if (!localStorage.getItem('userId')) {
+            window.location.replace("auth.html");
+        }
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/student-dashboard.css">
+    <link rel="stylesheet" href="../css/readability-fix.css">
+
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column">
+        <h3><i class="bi bi-mortarboard-fill"></i> EdTech</h3>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a onclick="showSection('overview')" id="nav-overview" class="nav-link active">
+                    <i class="bi bi-grid-fill"></i> <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="showSection('profile')" id="nav-profile" class="nav-link">
+                    <i class="bi bi-person-fill"></i> <span>My Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="showSection('courses')" id="nav-my-courses" class="nav-link">
+                    <i class="bi bi-book-fill"></i> <span>My Course</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-clipboard-check"></i> <span>Assignment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="quiz.html" class="nav-link">
+                    <i class="bi bi-star-fill"></i> <span>Skill Test</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-calendar-event"></i> <span>Event</span>
+                </a>
+            </li>
+               <li class="nav-item">
+                   <a onclick="showSection('results')" id="nav-results" class="nav-link">
+                       <i class="bi bi-file-earmark-check"></i> <span>Quiz Results</span>
+                   </a>
+               </li>
+            <li class="nav-item">
+                <a onclick="showSection('orders')" id="nav-orders" class="nav-link">
+                    <i class="bi bi-bag-fill"></i> <span>Order History</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-gear-fill"></i> <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-divider"></div>
+        <button onclick="handleLogout()" class="btn btn-outline-danger btn-sm w-100 rounded-pill" style="color: #FF6B6B; border-color: #FF6B6B;">
+            <i class="bi bi-box-arrow-left"></i> Log Out
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h2>Hello, <span id="studentNameDisplay">User</span>!</h2>
+                <p>Good morning. Let's start learning</p>
+            </div>
+            <div class="user-profile">
+                <span id="userRoleDisplay" style="color: #999; font-size: 0.9rem;">Student</span>
+                <img src="https://ui-avatars.com/api/?name=Student&background=6B4DFF&color=fff" alt="user">
+            </div>
+        </div>
+
+        <!-- Overview Section -->
+        <div id="section-overview" class="admin-section active">
+            <!-- Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Time Spend</div>
+                        <div class="stat-value">15:30:45</div>
+                        <div class="stat-change">+1.5% This Week</div>
+                        <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Course Progress</div>
+                        <div class="stat-value">75%</div>
+                        <div class="stat-change">-0.35% This Week</div>
+                        <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Assignment</div>
+                        <div class="stat-value">17/33</div>
+                        <div class="stat-change">+1 This Week</div>
+                        <div class="stat-icon"><i class="bi bi-clipboard-check"></i></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Streak</div>
+                        <div class="stat-value">12 Days</div>
+                        <div class="stat-change">Keep it up!</div>
+                        <div class="stat-icon"><i class="bi bi-fire"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row g-3 mb-4">
+                <!-- Monthly Progress Chart -->
+                <div class="col-lg-8">
+                    <div class="chart-container">
+                        <div class="chart-title">Monthly Progress</div>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Activity -->
+                <div class="col-lg-4">
+                    <div class="chart-container">
+                        <div class="chart-title">Today's Activity</div>
+                        <div style="position: relative; height: 300px; display: flex; align-items: center; justify-content: center;">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Dates & Top Performers -->
+            <div class="row g-3 mb-4">
+                <!-- Calendar -->
+                <div class="col-lg-4">
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <h6 style="margin: 0; font-weight: 600;">Event Dates</h6>
+                            <small style="color: var(--primary-purple); cursor: pointer;">See all â†’</small>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day">Su</div>
+                            <div class="calendar-day">Mo</div>
+                            <div class="calendar-day">Tu</div>
+                            <div class="calendar-day">We</div>
+                            <div class="calendar-day">Th</div>
+                            <div class="calendar-day">Fr</div>
+                            <div class="calendar-day">Sa</div>
+                            <div class="calendar-date">31</div>
+                            <div class="calendar-date">1</div>
+                            <div class="calendar-date">2</div>
+                            <div class="calendar-date">3</div>
+                            <div class="calendar-date">4</div>
+                            <div class="calendar-date">5</div>
+                            <div class="calendar-date">6</div>
+                            <div class="calendar-date">7</div>
+                            <div class="calendar-date">8</div>
+                            <div class="calendar-date">9</div>
+                            <div class="calendar-date">10</div>
+                            <div class="calendar-date">11</div>
+                            <div class="calendar-date">12</div>
+                            <div class="calendar-date active">13</div>
+                            <div class="calendar-date">14</div>
+                            <div class="calendar-date">15</div>
+                            <div class="calendar-date">16</div>
+                            <div class="calendar-date">17</div>
+                            <div class="calendar-date">18</div>
+                            <div class="calendar-date">19</div>
+                            <div class="calendar-date">20</div>
+                            <div class="calendar-date">21</div>
+                            <div class="calendar-date">22</div>
+                            <div class="calendar-date">23</div>
+                            <div class="calendar-date">24</div>
+                            <div class="calendar-date">25</div>
+                            <div class="calendar-date">26</div>
+                            <div class="calendar-date">27</div>
+                            <div class="calendar-date">28</div>
+                            <div class="calendar-date">29</div>
+                            <div class="calendar-date">30</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performers -->
+                <div class="col-lg-8">
+                    <div class="chart-container">
+                        <div class="chart-title">Top Performer</div>
+                        <div class="performer-badge">
+                            <div class="performer-rank">1</div>
+                            <img src="https://ui-avatars.com/api/?name=Rasel+Mondol&background=6B4DFF&color=fff" alt="user" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <div class="performer-info">
+                                <div class="performer-name">Rasel Mondol</div>
+                                <div style="font-size: 0.85rem; color: #999;">15 Assignment</div>
+                            </div>
+                            <div class="performer-score">85/100</div>
+                        </div>
+                        <div class="performer-badge">
+                            <div class="performer-rank">2</div>
+                            <img src="https://ui-avatars.com/api/?name=Devon+Lane&background=FFB800&color=fff" alt="user" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <div class="performer-info">
+                                <div class="performer-name">Devon Lane</div>
+                                <div style="font-size: 0.85rem; color: #999;">17 Assignment</div>
+                            </div>
+                            <div class="performer-score">78/100</div>
+                        </div>
+                        <div class="performer-badge">
+                            <div class="performer-rank">3</div>
+                            <img src="https://ui-avatars.com/api/?name=Bessie+Cooper&background=FF6B6B&color=fff" alt="user" style="width: 40px; height: 40px; border-radius: 50%;">
+                            <div class="performer-info">
+                                <div class="performer-name">Bessie Cooper</div>
+                                <div style="font-size: 0.85rem; color: #999;">20 Assignment</div>
+                            </div>
+                            <div class="performer-score">75/100</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Courses -->
+            <div class="section-title">My Course</div>
+            <div class="row g-3" id="enrolledGrid"></div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="section-profile" class="admin-section">
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);">
+                <h4 style="margin-bottom: 1.5rem;">My Profile</h4>
+                <p style="color: #999;">Profile information and settings coming soon...</p>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div id="section-courses" class="admin-section">
+            <div class="row g-3" id="allCourses"></div>
+        </div>
+
+        <!-- Order History Section -->
+        <div id="section-orders" class="admin-section">
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);">
+                <h4 style="margin-bottom: 1rem;">Order History</h4>
+                <div class="orders-toolbar">
+                    <div class="orders-filters">
+                        <button class="order-filter-btn active" data-filter="all" onclick="setOrderFilter('all')">All</button>
+                        <button class="order-filter-btn" data-filter="completed" onclick="setOrderFilter('completed')">Completed</button>
+                        <button class="order-filter-btn" data-filter="pending" onclick="setOrderFilter('pending')">Pending</button>
+                    </div>
+                    <small id="ordersCount" style="color:#999;">0 orders</small>
+                </div>
+                <div id="ordersLoading" class="orders-loading" style="display:none;">
+                    <span class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true"></span>
+                    Loading order history...
+                </div>
+                <div id="ordersList" class="orders-list"></div>
+            </div>
+        </div>
+
+           <!-- Quiz Results Section -->
+           <div id="section-results" class="admin-section">
+               <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);">
+                   <h4 style="margin-bottom: 2rem;">My Quiz Results</h4>
+                   <div id="quizResultsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+                       <p style="color: #999; grid-column: 1 / -1;">No quiz results yet</p>
+                   </div>
+               </div>
+           </div>
+    </div>
+
+    <script src="../javascript/app.js"></script>
+    <script>
+        const currentUserId = localStorage.getItem('userId');
+
+        // Load user info
+        document.getElementById('studentNameDisplay').innerText = localStorage.getItem('username') || 'Student';
+        document.getElementById('userRoleDisplay').innerText = localStorage.getItem('userRole') || 'Student';
+
+        // Show/Hide Sections
+        function showSection(id) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(`section-${id}`).classList.add('active');
+            const navItem = document.getElementById(`nav-${id}`);
+            if (navItem) {
+                navItem.classList.add('active');
+            }
+
+            if (id === 'orders') {
+                renderOrders();
+            }
+        }
+
+        // Course Card Component
+        function createCourseCard(title, progress, instructor) {
+            const colors = [
+                { bg: 'linear-gradient(135deg, #6B4DFF, #9D7AFF)', img: 'ðŸŽ¨' },
+                { bg: 'linear-gradient(135deg, #FFB800, #FFC72C)', img: 'ðŸ’»' },
+                { bg: 'linear-gradient(135deg, #FF6B9D, #C06C84)', img: 'ðŸŽ¬' }
+            ];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            return `
+                <div class="col-md-4">
+                    <div class="course-card">
+                        <div class="course-card-header" style="background: ${color.bg};">
+                            <span class="course-card-title">${title}</span>
+                        </div>
+                        <div class="course-card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <small style="color: #999;">${instructor}</small>
+                                <small style="color: var(--warning-yellow); font-weight: 600;">${progress}%</small>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill" style="width: ${progress}%;"></div>
+                            </div>
+                            <button class="course-continue-btn">Continue</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mock data for courses
+        const mockCourses = [
+            { title: 'Learn UI Design', instructor: 'Jenny Wilson', progress: 27 },
+            { title: 'Learn UI Design', instructor: 'Robert Fox', progress: 70 },
+            { title: 'Learn UI Design', instructor: 'Robert Fox', progress: 18 }
+        ];
+
+        // Render courses
+        document.getElementById('enrolledGrid').innerHTML = mockCourses.map(c => createCourseCard(c.title, c.progress, c.instructor)).join('');
+
+        // Order History Data
+        let activeOrderFilter = 'all';
+        let orderHistory = [];
+
+        function formatOrderDate(input) {
+            try {
+                return new Date(input).toLocaleDateString('en-US', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch {
+                return input || '-';
+            }
+        }
+
+        function getFilteredOrders() {
+            if (activeOrderFilter === 'all') {
+                return orderHistory;
+            }
+            return orderHistory.filter(order => order.status === activeOrderFilter);
+        }
+
+        function setOrderFilter(filter) {
+            activeOrderFilter = filter;
+            document.querySelectorAll('.order-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const list = document.getElementById('ordersList');
+            const count = document.getElementById('ordersCount');
+            if (!list || !count) {
+                return;
+            }
+
+            const filtered = getFilteredOrders();
+            count.textContent = `${filtered.length} order${filtered.length === 1 ? '' : 's'}`;
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="orders-placeholder">No orders found for this filter.</div>';
+                return;
+            }
+
+            list.innerHTML = filtered.map(order => `
+                <div class="order-card">
+                    <div>
+                        <div class="order-title">${order.courseTitle}</div>
+                        <div class="order-meta">Order #${order.orderId} â€¢ ${formatOrderDate(order.purchasedAt)}</div>
+                    </div>
+                    <div class="order-amount">$${Number(order.amount).toFixed(2)}</div>
+                    <div class="order-status ${order.status}">${order.status}</div>
+                </div>
+            `).join('');
+        }
+
+        async function loadOrderHistory() {
+            const loading = document.getElementById('ordersLoading');
+            if (loading) {
+                loading.style.display = 'flex';
+            }
+
+            try {
+                if (!currentUserId) {
+                    throw new Error('Missing user session');
+                }
+
+                const response = await fetch(`http://localhost:8080/api/orders/student/${currentUserId}`);
+                if (!response.ok) {
+                    throw new Error(`Orders API returned ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    orderHistory = data.map(item => ({
+                        orderId: item.orderId || item.id || 'NA',
+                        courseTitle: item.courseTitle || item.courseName || 'Untitled Course',
+                        amount: item.amount || item.price || 0,
+                        status: String(item.status || 'completed').toLowerCase(),
+                        purchasedAt: item.purchasedAt || item.orderDate || new Date().toISOString()
+                    }));
+                }
+            } catch (err) {
+                console.warn('Order history unavailable, using fallback data.');
+            }
+
+            if (!Array.isArray(orderHistory) || orderHistory.length === 0) {
+                orderHistory = [
+                    {
+                        orderId: 'TRN-1024',
+                        courseTitle: 'Advanced UI Design Masterclass',
+                        amount: 49,
+                        status: 'completed',
+                        purchasedAt: '2026-03-14T10:30:00Z'
+                    },
+                    {
+                        orderId: 'TRN-1029',
+                        courseTitle: 'React for Modern Frontend',
+                        amount: 59,
+                        status: 'pending',
+                        purchasedAt: '2026-04-01T14:10:00Z'
+                    },
+                    {
+                        orderId: 'TRN-1032',
+                        courseTitle: 'Motion Graphics Essentials',
+                        amount: 39,
+                        status: 'completed',
+                        purchasedAt: '2026-04-09T09:05:00Z'
+                    }
+                ];
+            }
+
+            if (loading) {
+                loading.style.display = 'none';
+            }
+
+            renderOrders();
+        }
+
+        // Charts
+        const progressCtx = document.getElementById('progressChart')?.getContext('2d');
+        if (progressCtx) {
+            new Chart(progressCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'Current',
+                            data: [20, 35, 40, 45, 50, 55, 60, 65, 70, 72, 75, 78],
+                            borderColor: '#6B4DFF',
+                            backgroundColor: 'rgba(107, 77, 255, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 0
+                        },
+                        {
+                            label: 'Previous',
+                            data: [15, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
+                            borderColor: '#99999933',
+                            backgroundColor: 'rgba(153, 153, 153, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#999', usePointStyle: true }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { color: '#666' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { ticks: { color: '#666' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        const activityCtx = document.getElementById('activityChart')?.getContext('2d');
+        if (activityCtx) {
+            new Chart(activityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['UI Design', 'Motion Design', '3D Art'],
+                    datasets: [{
+                        data: [40, 35, 25],
+                        backgroundColor: ['#6B4DFF', '#FFB800', '#00D4AA'],
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#999' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            window.location.replace("auth.html");
+        }
+
+        loadOrderHistory();
+       
+           function loadQuizResults() {
+               const studentEmail = localStorage.getItem('userEmail') || localStorage.getItem('username');
+               const resultsList = document.getElementById('quizResultsList');
+               const allResults = JSON.parse(localStorage.getItem('publishedResults') || '[]');
+           
+               // Filter results for current student
+               const studentResults = allResults.filter(r => r.studentEmail === studentEmail || r.studentName === studentEmail);
+           
+               if (studentResults.length === 0) {
+                   resultsList.innerHTML = '<div style="grid-column: 1 / -1; padding: 2rem; text-align: center;"><p style="color: #999;">No quiz results available yet. Check back later!</p></div>';
+                   return;
+               }
+           
+               resultsList.innerHTML = studentResults.map(r => {
+                   const gradeColor = r.grade === 'A' ? '#A5FFE8' : r.grade === 'B' ? '#FFD700' : r.grade === 'C' ? '#FFA500' : '#FF6B6B';
+                   return `
+                       <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 1.5rem; display: flex; flex-direction: column;">
+                           <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                               <div>
+                                   <h5 style="margin: 0 0 0.5rem 0; color: #f5f5f5;">${r.examName}</h5>
+                                   <p style="margin: 0; color: #999; font-size: 0.9rem;">Taken on ${new Date(r.publishedDate).toLocaleDateString()}</p>
+                               </div>
+                               <div style="text-align: right;">
+                                   <div style="display: flex; align-items: center; justify-content: flex-end; gap: 1rem;">
+                                       <div>
+                                           <div style="font-size: 2rem; font-weight: 700; color: #6B4DFF; line-height: 1;">${r.score}%</div>
+                                           <div style="font-size: 0.75rem; color: #999;">Score</div>
+                                       </div>
+                                       <div style="width: 60px; height: 60px; border-radius: 50%; background: ${gradeColor}33; display: flex; align-items: center; justify-content: center; border: 2px solid ${gradeColor};">
+                                           <span style="font-size: 1.8rem; font-weight: 700; color: ${gradeColor};">${r.grade}</span>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       
+                           <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                               <span style="font-size: 0.8rem; padding: 0.25rem 0.75rem; background: rgba(255, 255, 255, 0.1); border-radius: 20px; color: ${r.status === 'Pass' ? '#A5FFE8' : '#FFB3B3'};">
+                                   ${r.status}
+                               </span>
+                           </div>
+                       
+                           ${r.feedback ? `
+                               <div style="background: rgba(0, 0, 0, 0.3); border-left: 3px solid #6B4DFF; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                   <p style="margin: 0; color: #A8A8C2; font-size: 0.9rem;"><strong>Feedback:</strong></p>
+                                   <p style="margin: 0.5rem 0 0 0; color: #A8A8C2; font-size: 0.85rem;">"${r.feedback}"</p>
+                               </div>
+                           ` : ''}
+                       
+                           <button onclick="downloadResult('${r.id}')" style="background: rgba(107, 77, 255, 0.2); border: 1px solid rgba(107, 77, 255, 0.5); color: #6B4DFF; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s;">
+                               <i class="bi bi-download"></i> Download Result
+                           </button>
+                       </div>
+                   `;
+               }).join('');
+           }
+       
+           function downloadResult(resultId) {
+               const allResults = JSON.parse(localStorage.getItem('publishedResults') || '[]');
+               const result = allResults.find(r => r.id === resultId);
+           
+               if (!result) {
+                   alert('Result not found');
+                   return;
+               }
+           
+               // Create a text-based result document
+               const resultText = `
+    QUIZ RESULT CERTIFICATE
+    ========================
+
+    Exam/Test Name: ${result.examName}
+    Student Name: ${result.studentName}
+    Email: ${result.studentEmail}
+
+    Score: ${result.score}/100
+    Percentage: ${result.score}%
+    Grade: ${result.grade}
+    Status: ${result.status}
+
+    Date Taken: ${new Date(result.publishedDate).toLocaleString()}
+
+    ${result.feedback ? `Teacher Feedback:\n${result.feedback}\n\n` : ''}
+    Generated by TrainITup
+               `.trim();
+           
+               // Create blob and download
+               const element = document.createElement('a');
+               element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(resultText));
+               element.setAttribute('download', `${result.examName}_${result.studentName}_Result.txt`);
+               element.style.display = 'none';
+               document.body.appendChild(element);
+               element.click();
+               document.body.removeChild(element);
+           }
+    </script>
+</body>
+</html>
+

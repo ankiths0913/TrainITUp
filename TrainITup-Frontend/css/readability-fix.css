@@ -1,0 +1,60 @@
+/* Global readability overrides for mixed background/text combinations */
+
+/* Make common typography inherit the page-level text color */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+small,
+label,
+li,
+dt,
+dd,
+legend,
+figcaption,
+blockquote,
+span {
+  color: inherit;
+}
+
+/* Bootstrap utility classes that often force dark text on dark UI */
+.text-dark,
+.text-black,
+.text-body,
+.text-body-emphasis {
+  color: currentColor !important;
+}
+
+/* Keep muted text readable while still visually secondary */
+.text-muted,
+.text-body-secondary,
+.text-secondary {
+  color: color-mix(in srgb, currentColor 72%, transparent) !important;
+}
+
+/* Improve contrast for headings and body text in Bootstrap components */
+.card,
+.modal-content,
+.offcanvas,
+.dropdown-menu,
+.popover,
+.toast,
+.list-group-item,
+.accordion-button,
+.accordion-body,
+.table {
+  color: inherit;
+}
+
+/* Keep non-button links visible on both dark and light layouts */
+a:not(.btn):not(.nav-link) {
+  color: color-mix(in srgb, currentColor 85%, #6B4DFF 15%);
+}
+
+a:not(.btn):not(.nav-link):hover,
+a:not(.btn):not(.nav-link):focus {
+  color: #00D4AA;
+}

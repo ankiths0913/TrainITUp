@@ -1,0 +1,915 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Studio | TrainITup</title>
+    
+    <script>
+        // Security Guard: Teachers only!
+        if (localStorage.getItem('userRole') !== 'TEACHER') {
+            window.location.replace("auth.html");
+        }
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
+    
+    
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/teacher-dashboard.css">
+    <link rel="stylesheet" href="../css/readability-fix.css">
+
+</head>
+<body>
+
+    <div class="sidebar d-flex flex-column shadow">
+        <h3><i class="bi bi-mortarboard-fill"></i> EdTech</h3>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a onclick="showSection('overview')" id="nav-overview" class="nav-link active">
+                    <i class="bi bi-speedometer2"></i> <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="showSection('courses')" id="nav-courses" class="nav-link">
+                    <i class="bi bi-journal-bookmark-fill"></i> <span>My Content</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="showSection('create')" id="nav-create" class="nav-link">
+                    <i class="bi bi-plus-circle"></i> <span>Create Course</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a onclick="showSection('students')" id="nav-students" class="nav-link">
+                    <i class="bi bi-people-fill"></i> <span>Enrolled Students</span>
+                </a>
+            </li>
+        </ul>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 1.5rem 0;"></div>
+            <li class="nav-item">
+                <a onclick="showSection('results')" id="nav-results" class="nav-link">
+                    <i class="bi bi-file-earmark-text"></i> <span>Publish Results</span>
+                </a>
+            </li>
+        </ul>
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 1.5rem 0;"></div>
+        <button onclick="handleLogout()" class="btn btn-outline-danger btn-sm w-100 rounded-pill" style="color: var(--danger-red); border-color: var(--danger-red);">
+            <i class="bi bi-box-arrow-left"></i> Log Out
+        </button>
+    </div>
+
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header-main">
+            <div>
+                <h2>Hello, <span id="teacherNameDisplay">Instructor</span>!</h2>
+                <p>Good morning. Let's start teaching</p>
+            </div>
+            <div class="user-profile">
+                <span id="userRoleDisplay" style="color: #999; font-size: 0.9rem;">Teacher</span>
+                <img src="https://ui-avatars.com/api/?name=Teacher&background=6B4DFF&color=fff" alt="teacher">
+            </div>
+        </div>
+
+        <!-- Studio Home Section -->
+        <div id="section-overview" class="admin-section active">
+            <!-- Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Published Courses</div>
+                        <div class="stat-value" id="statCourseCount">0</div>
+                        <div style="font-size: 0.85rem; color: #999; margin-top: 0.5rem;"><i class="bi bi-book"></i> Active</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Students</div>
+                        <div class="stat-value">0</div>
+                        <div style="font-size: 0.85rem; color: #999; margin-top: 0.5rem;"><i class="bi bi-people"></i> Enrolled</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Creation</div>
+                        <a onclick="showSection('create')" class="btn btn-primary-custom w-100" style="margin-top: 0.8rem; padding: 0.6rem;">
+                            <i class="bi bi-plus-lg"></i> New Course
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px); margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem;"><i class="bi bi-rocket-takeoff-fill"></i> Grow Your Reach</h4>
+                <p style="color: #999; margin-bottom: 0;">Teachers who post at least one lesson per week see 3x more student engagement!</p>
+            </div>
+
+            <!-- My Courses -->
+            <div class="section-title">My Courses</div>
+            <div class="row g-3" id="enrolledGrid"></div>
+        </div>
+
+        <!-- My Content Section -->
+        <div id="section-courses" class="admin-section">
+            <h3 style="margin-bottom: 2rem;">My Published Courses</h3>
+            <div class="row g-3" id="teacherCourseGrid"></div>
+        </div>
+
+        <!-- Create Course Section -->
+        <div id="section-create" class="admin-section">
+            <div class="create-course-header">
+                <div>
+                    <h3>Create New Course</h3>
+                    <p>Build engaging educational content</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="showTab(event, 'course-details')">
+                        <span class="tab-number">1</span>
+                        <span>Course Details</span>
+                    </button>
+                    <button class="tab-button" onclick="showTab(event, 'curriculum')">
+                        <span class="tab-number">2</span>
+                        <span>Curriculum</span>
+                    </button>
+                    <button class="tab-button" onclick="showTab(event, 'faq')">
+                        <span class="tab-number">3</span>
+                        <span>FAQ</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Course Details -->
+            <div id="course-details" class="tab-content active">
+                <form id="courseForm">
+                    <div class="form-group-custom">
+                        <label class="form-label">Course Title</label>
+                        <input type="text" class="form-control-custom" id="courseTitle" placeholder="Graphic Design Bootcamp: Photoshop, Illustrator, InDesign" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group-custom">
+                            <label class="form-label">Category</label>
+                            <select class="form-control-custom" id="courseCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="design">Design</option>
+                                <option value="development">Development</option>
+                                <option value="business">Business</option>
+                                <option value="marketing">Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group-custom">
+                            <label class="form-label">Level</label>
+                            <select class="form-control-custom" id="courseLevel" required>
+                                <option value="">Select Level</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-group-custom">
+                            <label class="form-label">Price</label>
+                            <input type="number" class="form-control-custom" id="coursePrice" placeholder="$250.00" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label">Instructor</label>
+                        <input type="text" class="form-control-custom" id="instructorInput" placeholder="Your Name" required>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label">Course Description</label>
+                        <textarea class="form-control-custom" id="courseDescription" placeholder="Learn with TrainITup is an interesting platform..." required style="min-height: 120px;"></textarea>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label">What Students Will Learn?</label>
+                        <input type="text" class="form-control-custom" placeholder="Learn Figma Basics to Advanced Design">
+                        <button type="button" class="btn-add" style="margin-top: 0.8rem;" onclick="addLearnItem(this)">
+                            <i class="bi bi-plus"></i> Add More
+                        </button>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group-custom">
+                            <label class="form-label">Cover Photo</label>
+                            <div class="upload-area" onclick="document.getElementById('coverInput').click()">
+                                <i class="bi bi-image"></i>
+                                <p>Drag & Drop image or Browse</p>
+                                <small>Max. file size: 20MB</small>
+                                <input type="file" id="coverInput" hidden accept="image/*">
+                            </div>
+                        </div>
+                        <div class="form-group-custom">
+                            <label class="form-label">Promotional Video</label>
+                            <div class="upload-area" onclick="document.getElementById('videoInput').click()">
+                                <i class="bi bi-play-circle"></i>
+                                <p>Drag & Drop video or Browse</p>
+                                <small>Max. file size: 500MB</small>
+                                <input type="file" id="videoInput" hidden accept="video/*">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden by default until a file is chosen -->
+                    <div class="file-item" id="uploadStatusContainer" style="display: none;">
+                        <div>
+                            <i class="bi bi-file-earmark-image" style="color: #4f46e5;"></i>
+                            <span id="fileNameDisplay" style="margin-left: 0.8rem;">filename.jpg</span>
+                            <span id="fileSizeDisplay" style="color: #999; font-size: 0.8rem; margin-left: 1rem;">0 MB</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="progress-bar-custom">
+                                <div id="progressBarFill" class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <span id="progressTextDisplay" style="font-size: 0.85rem;">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Hidden by default until a file is chosen -->
+                    <div class="file-item" id="videoUploadStatusContainer" style="display: none;">
+                        <div>
+                            <i class="bi bi-file-earmark-play" style="color: #00D4AA;"></i>
+                            <span id="videoFileNameDisplay" style="margin-left: 0.8rem;">filename.mp4</span>
+                            <span id="videoFileSizeDisplay" style="color: #999; font-size: 0.8rem; margin-left: 1rem;">0 MB</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="progress-bar-custom">
+                                <div id="videoProgressBarFill" class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <span id="videoProgressTextDisplay" style="font-size: 0.85rem;">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-primary-custom" onclick="goToTab('curriculum')">
+                            Save & Continue <i class="bi bi-arrow-right"></i>
+                        </button>
+                        <button type="button" class="btn-secondary-custom">
+                            <i class="bi bi-download"></i> Save as Draft
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab 2: Curriculum -->
+            <div id="curriculum" class="tab-content">
+                <div class="module">
+                    <div class="module-header">
+                        <div>
+                            <div class="module-title">Module 1: Introduction</div>
+                            <small style="color: #999; margin-top: 0.3rem; display: block;">Lesson 1-3</small>
+                        </div>
+                        <button type="button" class="btn-add" onclick="alert('Module added!')">
+                            <i class="bi bi-plus"></i> Add Module
+                        </button>
+                    </div>
+                    <div style="background: white; color: #1a1f3a; padding: 1rem; border-radius: 6px; margin: 0.8rem 0; border-left: 4px solid #08bd80;">
+                        <strong>Lesson 1: Getting Started</strong>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                        <button type="button" class="btn-add" onclick="alert('Lesson added!')">
+                            <i class="bi bi-plus"></i> Add Lesson
+                        </button>
+                        <button type="button" class="btn-add" onclick="alert('Quiz added!')">
+                            <i class="bi bi-plus"></i> Add Quiz
+                        </button>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-header">
+                        <div>
+                            <div class="module-title">Module 2: Advanced Topics</div>
+                            <small style="color: #999; margin-top: 0.3rem; display: block;">Lesson 4-6</small>
+                        </div>
+                        <button type="button" class="btn-add" onclick="alert('Module added!')">
+                            <i class="bi bi-plus"></i> Add Module
+                        </button>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                        <button type="button" class="btn-add" onclick="alert('Lesson added!')">
+                            <i class="bi bi-plus"></i> Add Lesson
+                        </button>
+                        <button type="button" class="btn-add" onclick="alert('Quiz added!')">
+                            <i class="bi bi-plus"></i> Add Quiz
+                        </button>
+                    </div>
+                </div>
+
+                <div class="button-group" style="margin-top: 2rem;">
+                    <button type="button" class="btn-primary-custom" onclick="goToTab('faq')">
+                        Save & Continue <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn-secondary-custom">
+                        <i class="bi bi-download"></i> Save as Draft
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 3: FAQ -->
+            <div id="faq" class="tab-content">
+                <div class="faq-item active">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do I need any prior experience?</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No prior experience is required! This course is designed for beginners and covers all fundamental concepts from the ground up.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What topics will be covered?</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The course covers design basics, principles, tools, and practical implementation techniques.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long does the course take?</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Most students complete the course in 4-6 weeks depending on their commitment level.</p>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-add" style="margin-top: 1.5rem;" onclick="alert('FAQ added!')">
+                    <i class="bi bi-plus"></i> Add FAQ
+                </button>
+
+                <div class="button-group" style="margin-top: 2rem;">
+                    <button type="button" class="btn-primary-custom" onclick="submitCourse()">
+                        <i class="bi bi-check-circle"></i> Publish Course
+                    </button>
+                    <button type="button" class="btn-secondary-custom">
+                        <i class="bi bi-download"></i> Save as Draft
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Students Section -->
+        <div id="section-students" class="admin-section">
+            <h3 style="margin-bottom: 2rem;">Student Enrollment</h3>
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);">
+                <h6 style="margin-bottom: 1rem;">Enrolled Students</h6>
+                <p style="color: #999; margin: 0;">No students enrolled yet. When students enroll in your courses, they'll appear here.</p>
+            </div>
+        </div>
+
+           <!-- Publish Results Section -->
+           <div id="section-results" class="admin-section">
+               <h3 style="margin-bottom: 2rem;">Publish Exam/Test Results</h3>
+           
+               <div class="row g-3">
+                   <div class="col-lg-6">
+                       <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);">
+                           <h5 class="mb-3">Publish New Result</h5>
+                       
+                           <div class="mb-3">
+                               <label class="form-label">Exam/Test Name</label>
+                               <input type="text" id="resultExamName" class="form-control-custom" placeholder="e.g., Final Exam, Quiz 1, Midterm Test">
+                           </div>
+                       
+                           <div class="mb-3">
+                               <label class="form-label">Student Name</label>
+                               <input type="text" id="resultStudentName" class="form-control-custom" placeholder="Student name">
+                           </div>
+                       
+                           <div class="mb-3">
+                               <label class="form-label">Student Email</label>
+                               <input type="email" id="resultStudentEmail" class="form-control-custom" placeholder="student@email.com">
+                           </div>
+                       
+                           <div class="row g-2 mb-3">
+                               <div class="col-6">
+                                   <label class="form-label">Score (Out of 100)</label>
+                                   <input type="number" id="resultScore" class="form-control-custom" placeholder="85" min="0" max="100">
+                               </div>
+                               <div class="col-6">
+                                   <label class="form-label">Pass/Fail</label>
+                                   <select id="resultStatus" class="form-control-custom">
+                                       <option value="Pass">Pass</option>
+                                       <option value="Fail">Fail</option>
+                                   </select>
+                               </div>
+                           </div>
+                       
+                           <div class="mb-3">
+                               <label class="form-label">Feedback (Optional)</label>
+                               <textarea id="resultFeedback" class="form-control-custom" placeholder="Add feedback for the student..." rows="3"></textarea>
+                           </div>
+                       
+                           <button onclick="publishResult()" class="btn btn-primary w-100 rounded-pill">
+                               <i class="bi bi-cloud-upload"></i> Publish Result
+                           </button>
+                       </div>
+                   </div>
+               
+                   <div class="col-lg-6">
+                       <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);">
+                           <h5 class="mb-3">Published Results</h5>
+                           <div id="publishedResultsList" style="max-height: 400px; overflow-y: auto;">
+                               <p style="color: #999;">No results published yet</p>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const teacherId = localStorage.getItem('userId');
+        const teacherName = localStorage.getItem('username');
+        const API_BASE = "http://localhost:8080/api/courses";
+
+        let uploadedCoverUrl = "";
+        let uploadedVideoUrl = "";
+
+        document.getElementById('teacherNameDisplay').innerText = teacherName || 'Instructor';
+        document.getElementById('userRoleDisplay').innerText = localStorage.getItem('userRole') || 'Teacher';
+        if (document.getElementById('instructorInput')) {
+            document.getElementById('instructorInput').value = teacherName || '';
+        }
+
+        const coverInput = document.getElementById('coverInput');
+        const uploadStatusContainer = document.getElementById('uploadStatusContainer');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const fileSizeDisplay = document.getElementById('fileSizeDisplay');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressTextDisplay = document.getElementById('progressTextDisplay');
+        const videoInput = document.getElementById('videoInput');
+        const videoUploadStatusContainer = document.getElementById('videoUploadStatusContainer');
+        const videoFileNameDisplay = document.getElementById('videoFileNameDisplay');
+        const videoFileSizeDisplay = document.getElementById('videoFileSizeDisplay');
+        const videoProgressBarFill = document.getElementById('videoProgressBarFill');
+        const videoProgressTextDisplay = document.getElementById('videoProgressTextDisplay');
+
+        if (coverInput) {
+            coverInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (uploadStatusContainer) {
+                    uploadStatusContainer.style.display = 'flex';
+                }
+
+                if (fileNameDisplay) {
+                    fileNameDisplay.innerText = file.name;
+                }
+
+                if (fileSizeDisplay) {
+                    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                    fileSizeDisplay.innerText = `${fileSizeMB} MB`;
+                }
+
+                if (progressBarFill) {
+                    progressBarFill.style.width = '0%';
+                    progressBarFill.style.backgroundColor = '';
+                }
+
+                if (progressTextDisplay) {
+                    progressTextDisplay.innerText = '0%';
+                }
+
+                uploadFileToBackend(file, 'image');
+            });
+        }
+
+        if (videoInput) {
+            videoInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (videoUploadStatusContainer) {
+                    videoUploadStatusContainer.style.display = 'flex';
+                }
+
+                if (videoFileNameDisplay) {
+                    videoFileNameDisplay.innerText = file.name;
+                }
+
+                if (videoFileSizeDisplay) {
+                    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                    videoFileSizeDisplay.innerText = `${fileSizeMB} MB`;
+                }
+
+                if (videoProgressBarFill) {
+                    videoProgressBarFill.style.width = '0%';
+                    videoProgressBarFill.style.backgroundColor = '';
+                }
+
+                if (videoProgressTextDisplay) {
+                    videoProgressTextDisplay.innerText = '0%';
+                }
+
+                uploadFileToBackend(file, 'video');
+            });
+        }
+
+        async function uploadFileToBackend(file, type) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const token = localStorage.getItem('token');
+                console.log('Token being sent:', token);
+
+                const response = await axios.post('http://localhost:8080/api/courses/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        if (type === 'image') {
+                            if (progressBarFill) {
+                                progressBarFill.style.width = `${percentCompleted}%`;
+                            }
+                            if (progressTextDisplay) {
+                                progressTextDisplay.innerText = `${percentCompleted}%`;
+                            }
+                        } else if (type === 'video') {
+                            if (videoProgressBarFill) {
+                                videoProgressBarFill.style.width = `${percentCompleted}%`;
+                            }
+                            if (videoProgressTextDisplay) {
+                                videoProgressTextDisplay.innerText = `${percentCompleted}%`;
+                            }
+                        }
+                    }
+                });
+
+                if (type === 'image') {
+                    uploadedCoverUrl = response?.data?.fileUrl || '';
+                    if (progressBarFill) {
+                        progressBarFill.style.backgroundColor = '#00D4AA';
+                    }
+                    setTimeout(() => alert('Upload Complete!'), 500);
+                } else if (type === 'video') {
+                    uploadedVideoUrl = response?.data?.fileUrl || '';
+                    if (videoProgressBarFill) {
+                        videoProgressBarFill.style.backgroundColor = '#00D4AA';
+                    }
+                    setTimeout(() => alert('Video upload complete!'), 500);
+                }
+            } catch (error) {
+                console.error('Upload failed', error);
+                if (type === 'image') {
+                    if (progressBarFill) {
+                        progressBarFill.style.backgroundColor = '#FF6B6B';
+                    }
+                    if (progressTextDisplay) {
+                        progressTextDisplay.innerText = 'Failed';
+                    }
+                } else if (type === 'video') {
+                    if (videoProgressBarFill) {
+                        videoProgressBarFill.style.backgroundColor = '#FF6B6B';
+                    }
+                    if (videoProgressTextDisplay) {
+                        videoProgressTextDisplay.innerText = 'Failed';
+                    }
+                }
+            }
+        }
+
+        // Show section function
+        function showSection(sectionId) {
+            const targetSection = document.getElementById(`section-${sectionId}`);
+            const targetBtn = document.getElementById(`nav-${sectionId}`);
+
+            // SAFETY CHECK: If the HTML elements don't exist, stop the function before it crashes!
+            if (!targetSection || !targetBtn) {
+                console.warn(`Could not find section or button for ID: ${sectionId}`);
+                return;
+            }
+
+            // Remove active classes from everything
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            // Add active class to the targets
+            targetSection.classList.add('active');
+            targetBtn.classList.add('active');
+
+            // Load published results when results section is shown
+            if (sectionId === 'results') {
+                loadPublishedResults();
+            }
+        }
+
+        // Show tab function for course creation
+        function showTab(e, tabName) {
+            e.preventDefault();
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            e.target.closest('.tab-button').classList.add('active');
+        }
+
+        // Go to specific tab
+        function goToTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabIndex = ['course-details', 'curriculum', 'faq'].indexOf(tabName);
+            if (tabButtons[tabIndex]) {
+                tabButtons[tabIndex].classList.add('active');
+            }
+        }
+
+        // Toggle FAQ
+        function toggleFAQ(element) {
+            const item = element.closest('.faq-item');
+            item.classList.toggle('active');
+        }
+
+        // Add learning item
+        function addLearnItem(btn) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control-custom';
+            input.placeholder = 'Enter learning objective';
+            input.style.marginTop = '0.8rem';
+            btn.parentElement.insertBefore(input, btn);
+        }
+
+        // Publish course
+        function publishCourse() {
+            alert('Course published successfully!');
+            showSection('overview');
+        }
+
+        async function submitCourse() {
+            const userId = localStorage.getItem('userId');
+            
+            const courseData = {
+                title: document.getElementById('courseTitle')?.value?.trim() || '',
+                description: document.getElementById('courseDescription')?.value?.trim() || '',
+                price: document.getElementById('coursePrice')?.value ?? '',
+                category: document.getElementById('courseCategory')?.value || '',
+                level: document.getElementById('courseLevel')?.value || '',
+                imageUrl: uploadedCoverUrl,
+                videoUrl: uploadedVideoUrl,
+                teacherId: userId
+            };
+
+            const missingFields = [];
+            if (!courseData.title) missingFields.push('Title');
+            if (!courseData.description) missingFields.push('Description');
+            if (courseData.price === '' || courseData.price === null) missingFields.push('Price');
+            if (!courseData.category) missingFields.push('Category');
+            if (!courseData.level) missingFields.push('Level');
+            if (missingFields.length > 0) {
+                alert(`Please fill in all required fields: ${missingFields.join(', ')}.`);
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+            try {
+                await axios.post('http://localhost:8080/api/courses', courseData, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    }
+                });
+
+                alert('Course Created Successfully!');
+                showSection('courses');
+                loadMyCourses();
+            } catch (error) {
+                console.error('Course submit failed', error);
+                alert('Failed to create course. Please try again.');
+            }
+        }
+
+        // Course Card Component
+        function createCourseCard(title, instructor, progress) {
+            const colors = [
+                { bg: 'linear-gradient(135deg, #6B4DFF, #9D7AFF)' },
+                { bg: 'linear-gradient(135deg, #FFB800, #FFC72C)' },
+                { bg: 'linear-gradient(135deg, #FF6B9D, #C06C84)' }
+            ];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            return `
+                <div class="col-md-4">
+                    <div class="course-card">
+                        <div class="course-card-header" style="background: ${color.bg};">
+                            <span class="course-card-title">${title}</span>
+                        </div>
+                        <div class="course-card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                                <small style="color: #999;">${instructor}</small>
+                                <small style="color: var(--warning-yellow); font-weight: 600;">${progress}%</small>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill" style="width: ${progress}%;"></div>
+                            </div>
+                            <button class="course-continue-btn" style="background: linear-gradient(135deg, var(--primary-purple), #9D7AFF); color: white; border: none; border-radius: 10px; padding: 0.6rem 1.5rem; font-weight: 600; cursor: pointer; margin-top: 1rem; width: 100%; transition: all 0.3s ease;">Edit Course</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mock data for courses
+        const mockCourses = [
+            { title: 'Learn UI Design', instructor: 'You', progress: 100 },
+            { title: 'Learn Web Development', instructor: 'You', progress: 85 },
+            { title: 'Learn UX Design', instructor: 'You', progress: 70 }
+        ];
+
+        // Render mock courses
+        document.getElementById('enrolledGrid').innerHTML = mockCourses.map(c => createCourseCard(c.title, c.instructor, c.progress)).join('');
+
+        // Load teacher courses
+        async function loadMyCourses() {
+            const statCourseCount = document.getElementById('statCourseCount');
+            const grid = document.getElementById('teacherCourseGrid');
+
+            try {
+                const token = localStorage.getItem('token');
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    throw new Error('Missing teacher session');
+                }
+
+                const response = await axios.get(`http://localhost:8080/api/courses/teacher/${userId}`, {
+                    headers: {
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    }
+                });
+
+                const courses = response.data;
+                const safeCourses = Array.isArray(courses) ? courses : [];
+
+                if (statCourseCount) {
+                    statCourseCount.innerText = safeCourses.length;
+                }
+
+                if (!grid) {
+                    return;
+                }
+
+                if (safeCourses.length === 0) {
+                    grid.innerHTML = '<div class="col-12"><div class="glass-panel text-center" style="padding:1.5rem;"><p class="mb-0 small-muted">No courses found for your instructor account yet.</p></div></div>';
+                    return;
+                }
+
+                grid.innerHTML = safeCourses.map(course => `
+                    <div class="col-md-4">
+                        <div class="course-card">
+                            <img src="${course.imageUrl}" class="card-img-top" style="height:180px; object-fit:cover;">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold mb-2" style="color: var(--light-text);">${course.title}</h6>
+                                <p style="color: #999; font-size: 0.85rem; margin: 0.5rem 0;">${course.lessons} Lessons | <span style="color: var(--primary-purple); font-weight: bold;">$${course.price}</span></p>
+                                <div class="d-flex gap-2" style="margin-top: 1rem;">
+                                    <button class="btn btn-light border btn-sm w-100 rounded-pill">Manage</button>
+                                    <button class="btn btn-outline-danger btn-sm rounded-circle" onclick="deleteCourse(${course.id})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load courses:', error);
+                if (statCourseCount) {
+                    statCourseCount.innerText = '0';
+                }
+                if (grid) {
+                    grid.innerHTML = '<div class="col-12"><div class="glass-panel text-center" style="padding:1.5rem;"><p class="mb-0 small-muted">Unable to load your courses right now. Please try again shortly.</p></div></div>';
+                }
+            }
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            window.location.replace("auth.html");
+        }
+
+           function publishResult() {
+               const examName = document.getElementById('resultExamName').value.trim();
+               const studentName = document.getElementById('resultStudentName').value.trim();
+               const studentEmail = document.getElementById('resultStudentEmail').value.trim();
+               const score = parseInt(document.getElementById('resultScore').value);
+               const status = document.getElementById('resultStatus').value;
+               const feedback = document.getElementById('resultFeedback').value.trim();
+
+               // Validation
+               if (!examName || !studentName || !studentEmail || isNaN(score)) {
+                   alert('Please fill in all required fields');
+                   return;
+               }
+
+               if (score < 0 || score > 100) {
+                   alert('Score must be between 0 and 100');
+                   return;
+               }
+
+               // Create result object
+               const result = {
+                   id: Math.random().toString(36).substr(2, 9),
+                   examName,
+                   studentName,
+                   studentEmail,
+                   score,
+                   status,
+                   feedback,
+                   publishedDate: new Date().toISOString(),
+                   teacherId: teacherId,
+                   percentage: score,
+                   grade: score >= 80 ? 'A' : score >= 70 ? 'B' : score >= 60 ? 'C' : 'F'
+               };
+
+               // Get existing results
+               const existingResults = JSON.parse(localStorage.getItem('publishedResults') || '[]');
+               existingResults.push(result);
+               localStorage.setItem('publishedResults', JSON.stringify(existingResults));
+
+               // Clear form
+               document.getElementById('resultExamName').value = '';
+               document.getElementById('resultStudentName').value = '';
+               document.getElementById('resultStudentEmail').value = '';
+               document.getElementById('resultScore').value = '';
+               document.getElementById('resultStatus').value = 'Pass';
+               document.getElementById('resultFeedback').value = '';
+
+               // Refresh results list
+               loadPublishedResults();
+               alert('Result published successfully!');
+           }
+
+           function loadPublishedResults() {
+               const resultsList = document.getElementById('publishedResultsList');
+               const results = JSON.parse(localStorage.getItem('publishedResults') || '[]');
+
+               if (results.length === 0) {
+                   resultsList.innerHTML = '<p style="color: #999;">No results published yet</p>';
+                   return;
+               }
+
+               resultsList.innerHTML = results.map(r => `
+                   <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+                       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.8rem;">
+                           <div>
+                               <div style="font-weight: 600; color: #f5f5f5;">${r.examName}</div>
+                               <div style="font-size: 0.85rem; color: #999;">${r.studentName}</div>
+                           </div>
+                           <div style="text-align: right;">
+                               <div style="font-size: 1.3rem; font-weight: 700; color: #6B4DFF;">${r.score}%</div>
+                               <div style="font-size: 0.8rem; color: ${r.status === 'Pass' ? '#A5FFE8' : '#FFB3B3'}">${r.status}</div>
+                           </div>
+                       </div>
+                       ${r.feedback ? `<div style="font-size: 0.85rem; color: #A8A8C2; padding: 0.8rem; background: rgba(0, 0, 0, 0.3); border-radius: 8px; margin-top: 0.8rem;">"${r.feedback}"</div>` : ''}
+                       <button onclick="deleteResult('${r.id}')" style="background: none; border: none; color: #FF6B6B; cursor: pointer; font-size: 0.8rem; margin-top: 0.8rem;">
+                           <i class="bi bi-trash"></i> Delete
+                       </button>
+                   </div>
+               `).join('');
+           }
+
+           function deleteResult(resultId) {
+               if (confirm('Are you sure you want to delete this result?')) {
+                   const results = JSON.parse(localStorage.getItem('publishedResults') || '[]');
+                   const filtered = results.filter(r => r.id !== resultId);
+                   localStorage.setItem('publishedResults', JSON.stringify(filtered));
+                   loadPublishedResults();
+               }
+           }
+
+        window.onload = loadMyCourses;
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,563 @@
+﻿:root {
+      --brand-primary: #6B4DFF;
+      --brand-secondary: #00D4AA;
+      --brand-accent: #FF6B9D;
+      --brand-dark: #0F0F23;
+      --brand-panel: #1A1A2E;
+      --text-main: #ECECF6;
+      --text-soft: #C7C7DF;
+      --border-soft: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Geist', sans-serif;
+      background: #ffffff;
+      color: #212529;
+    }
+
+    .text-primary {
+      color: var(--brand-secondary) !important;
+    }
+
+    .text-muted,
+    .small.text-muted,
+    p,
+    .lead {
+      color: #6c757d !important;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand-primary), #8B73FF);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(107, 77, 255, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(107, 77, 255, 0.42);
+      color: #fff;
+    }
+
+    .btn-light,
+    .btn-outline-dark,
+    .btn-outline-secondary {
+      border-radius: 999px;
+      border-color: var(--border-soft);
+      color: #E2E2F5;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn-outline-dark:hover,
+    .btn-light:hover,
+    .btn-outline-secondary:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar.bg-white {
+      background: #ffffff !important;
+      border-bottom: 1px solid #e9ecef;
+      backdrop-filter: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .navbar-brand .text-dark {
+      color: #212529 !important;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: #6c757d;
+      border-radius: 999px;
+      padding: 0.45rem 0.9rem !important;
+      transition: all 0.25s ease;
+    }
+
+    .nav-link:hover {
+      color: #212529;
+      background: rgba(107, 77, 255, 0.08);
+    }
+
+    .circle-bg {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 850px;
+      height: 850px;
+      background: radial-gradient(circle, rgba(107, 77, 255, 0.26), rgba(0, 212, 170, 0.08) 55%, transparent 75%);
+      border-radius: 9999px;
+      filter: blur(34px);
+      z-index: -1;
+      animation: pulseGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+    }
+
+    #hero h1,
+    #hero .display-3,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #212529;
+      line-height: 1.25;
+    }
+
+    #hero .badge {
+      background: rgba(107, 77, 255, 0.1) !important;
+      border-color: #6B4DFF !important;
+      color: #6B4DFF !important;
+    }
+
+    #hero img {
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    section {
+      clear: both;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1200px;
+    }
+
+    .bg-light,
+    .bg-white,
+    #pricing.bg-white {
+      background: #ffffff !important;
+    }
+
+    .bg-light .text-muted,
+    .bg-white .text-muted,
+    .bg-light p,
+    .bg-white p,
+    .bg-light .lead,
+    .bg-white .lead {
+      color: #6c757d !important;
+    }
+
+    #hero .text-muted,
+    #hero p,
+    #hero .lead {
+      color: #6c757d !important;
+    }
+
+    #courses,
+    #community,
+    #testimonials,
+    #pricing {
+      border-top: 1px solid #e9ecef;
+    }
+
+    .card {
+      background: #ffffff !important;
+      border: 1px solid #e9ecef !important;
+      color: #212529;
+      backdrop-filter: none;
+    }
+
+    .card-lift {
+      transition: transform 0.24s ease-in-out, box-shadow 0.24s ease-in-out, border-color 0.24s ease-in-out;
+      border-radius: 2rem;
+    }
+
+    .card-lift:hover {
+      transform: translateY(-0.5rem);
+      border-color: #6B4DFF !important;
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .row.g-4 {
+      row-gap: 2rem !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-bottom: 1rem;
+    }
+
+    nav {
+      margin-bottom: 0;
+    }
+
+    .text-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .text-center h2 {
+      margin: 1rem 0 1.4rem 0;
+    }
+
+    .text-center p {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .list-unstyled li {
+      color: #D1D1E8;
+    }
+
+    .pricing-grid {
+      align-items: stretch;
+    }
+
+    /* Popular Goals Section */
+    .goal-card {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 2.5rem 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .goal-card:hover {
+      transform: translateY(-4px);
+      background: #f0f2f5;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      border-color: #6B4DFF;
+    }
+
+    .goal-icon-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .goal-card:hover .goal-icon-box {
+      background: #f0f2f5;
+      border-color: #6B4DFF;
+    }
+
+    .goal-icon {
+      font-size: 2rem;
+      color: #495057;
+      transition: color 0.3s ease;
+    }
+
+    .goal-card:hover .goal-icon {
+      color: #6B4DFF;
+    }
+
+    .goal-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .pricing-course-card {
+      background: #ffffff;
+      border: 1px solid #e9ecef;
+      border-radius: 16px;
+      padding: 1rem 0.9rem 0.95rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      min-height: 100%;
+    }
+
+    .pricing-course-title {
+      font-size: 1.75rem;
+      line-height: 1.1;
+      font-weight: 800;
+      color: #212529;
+      margin: 0;
+      letter-spacing: -0.3px;
+      text-align: center;
+    }
+
+    .pricing-header-wrapper {
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      justify-content: center;
+    }
+
+    .pricing-course-subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: center;
+      color: #ff6ba3 !important;
+    }
+
+    .pricing-course-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+    }
+
+    .pricing-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #6c757d;
+      margin-top: 0.1rem;
+    }
+
+    .pricing-meta-row strong {
+      color: #00f08c;
+      font-size: 0.95rem;
+    }
+
+    .pricing-free-title {
+      margin: 0;
+      font-size: 1.65rem;
+      line-height: 1;
+      text-align: center;
+      color: #00f08c;
+      font-weight: 800;
+    }
+
+    .pricing-free-copy {
+      margin: 0;
+      text-align: center;
+      color: #6c757d !important;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .pricing-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(107, 77, 255, 0.1);
+      color: #6B4DFF;
+      border: 1px solid rgba(107, 77, 255, 0.3);
+      padding: 0.32rem 0.72rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .pricing-button-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: auto;
+    }
+
+    .pricing-view-btn {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      width: 100%;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2262ff 0%, #3d86ff 100%);
+      border: none;
+      color: #ffffff !important;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.72rem 0.9rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 12px rgba(33, 98, 255, 0.25);
+    }
+
+    .pricing-view-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(33, 98, 255, 0.32);
+      color: #ffffff !important;
+    }
+
+    .marketplace-course-card {
+      background: #ffffff;
+      border: 1px solid #e9ecef;
+      border-radius: 1.6rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      min-height: 100%;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .marketplace-course-card:hover {
+      transform: translateY(-0.35rem);
+      border-color: #6B4DFF;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .marketplace-course-image-wrap {
+      padding: 0.8rem 0.8rem 0;
+    }
+
+    .marketplace-course-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 1.15rem;
+      border: 1px solid #e9ecef;
+    }
+
+    .marketplace-course-body {
+      padding: 1rem 1rem 1.05rem;
+      flex: 1 1 auto;
+    }
+
+    .marketplace-header-wrapper {
+      min-height: 92px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .marketplace-badge {
+      width: fit-content;
+      padding: 0.34rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(107, 77, 255, 0.1);
+      border: 1px solid #6B4DFF;
+      color: #6B4DFF;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .marketplace-course-title {
+      margin: 0;
+      color: #212529;
+      font-size: 1.22rem;
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .marketplace-educator-row {
+      min-height: 28px;
+    }
+
+    .marketplace-educator-avatar {
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+      border: 1px solid #e9ecef;
+    }
+
+    .marketplace-educator-text,
+    .marketplace-student-count,
+    .marketplace-lessons {
+      color: #6c757d;
+      font-size: 0.88rem;
+    }
+
+    .marketplace-educator-name {
+      color: #212529;
+      font-weight: 700;
+    }
+
+    .marketplace-rating-row {
+      min-height: 22px;
+    }
+
+    .marketplace-footer {
+      margin-top: auto;
+    }
+
+    .marketplace-price {
+      color: #00f08c !important;
+      font-size: 1.15rem;
+    }
+
+    .marketplace-join-btn {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      background: linear-gradient(135deg, #2262ff 0%, #3d86ff 100%);
+      border: none;
+      color: #ffffff !important;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 4px 12px rgba(33, 98, 255, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .marketplace-join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(33, 98, 255, 0.32);
+      color: #fff !important;
+    }
+
+    #authHub .text-dark {
+      color: #212529 !important;
+    }
+
+    footer {
+      background: #ffffff !important;
+      border-top: 1px solid #e9ecef !important;
+      color: #6c757d;
+    }
+
+    footer a {
+      color: #6B4DFF;
+    }
+
+    footer a:hover {
+      color: #5a3dcc;
+    }
+
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-lg-10 { padding-top: 3rem; padding-bottom: 3rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .mb-10 { margin-bottom: 2.5rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mt-10 { margin-top: 2.5rem; }
+    .gap-6 { gap: 1.5rem; }
+
+    @media (max-width: 991px) {
+      .navbar-collapse {
+        margin-top: 0.8rem;
+        padding: 0.9rem;
+        border: 1px solid var(--border-soft);
+        border-radius: 14px;
+        background: rgba(17, 17, 34, 0.92);
+      }
+    }
+
+    @media (min-width: 992px) {
+      .py-lg-10 { padding-top: 3rem; padding-bottom: 3rem; }
+    }

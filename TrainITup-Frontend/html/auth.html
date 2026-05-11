@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrainITup - Login & Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/boxicons.min.css">
+    
+    <!-- Security Guard: Redirect logged-in users to their dashboard -->
+    <script>
+        (function() {
+            const userId = localStorage.getItem('userId');
+            const userRole = localStorage.getItem('userRole');
+            
+            // If user is already logged in, redirect to appropriate dashboard
+            if (userId && userRole) {
+                let redirectUrl = 'index.html'; // Default fallback
+                
+                switch(userRole.toUpperCase()) {
+                    case 'ADMIN':
+                        redirectUrl = 'super-admin.html';
+                        break;
+                    case 'TEACHER':
+                        redirectUrl = 'teacher-dashboard.html';
+                        break;
+                    case 'STUDENT':
+                        redirectUrl = 'student-dashboard.html';
+                        break;
+                    default:
+                        redirectUrl = 'index.html';
+                }
+                
+                // Redirect immediately
+                window.location.replace(redirectUrl);
+            }
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/readability-fix.css">
+
+</head>
+<body>
+
+    <div id="container" class="container">
+        <!-- FORM SECTION -->
+        <div class="row">
+            <!-- SIGN UP -->
+            <div class="col align-items-center flex-col sign-up">
+                <div class="form-wrapper align-items-center">
+                    <div class="form sign-up">
+                        <h2>Create Account</h2>
+                        
+                        <form id="registrationFormElement" onsubmit="handleRegisterSubmit(event)">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" id="regName" placeholder="Full Name" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-mail-send'></i>
+                                <input type="email" id="regEmail" placeholder="Email Address" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="regPass" placeholder="Password" required class="has-toggle" oninput="checkPasswordStrength()">
+                                <span class="toggle-password" onclick="togglePasswordVisibility('regPass')">
+                                    <i class='bx bxs-hide'></i>
+                                </span>
+                                <div class="password-strength" id="strengthIndicator" style="display: none;">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill" id="strengthFill"></div>
+                                    </div>
+                                    <span id="strengthText" style="color: var(--gray-2); font-size: 0.75rem; min-width: 50px;">Weak</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="regPassConfirm" placeholder="Confirm Password" required class="has-toggle" oninput="checkPasswordStrength()">
+                                <span class="toggle-password" onclick="togglePasswordVisibility('regPassConfirm')">
+                                    <i class='bx bxs-hide'></i>
+                                </span>
+                            </div>
+                            <button type="submit" id="signupBtn">Sign Up</button>
+                        </form>
+
+                        <div id="regStatus" class="message"></div>
+
+                        <p>
+                            <span>Already have an account?</span>
+                            <b onclick="toggle()" class="pointer"> Sign in here</b>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- END SIGN UP -->
+
+            <!-- SIGN IN -->
+            <div class="col align-items-center flex-col sign-in">
+                <div class="form-wrapper align-items-center">
+                    <div class="form sign-in">
+                        <h2>Welcome Back</h2>
+                        
+                        <form id="loginFormElement" onsubmit="handleLoginSubmit(event)">
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                <input type="text" id="loginUser" placeholder="Username" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                <input type="password" id="loginPass" placeholder="Password" required class="has-toggle">
+                                <span class="toggle-password" onclick="togglePasswordVisibility('loginPass')">
+                                    <i class='bx bxs-hide'></i>
+                                </span>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="rememberMe">
+                                <label for="rememberMe">Remember me</label>
+                            </div>
+                            <button type="submit" id="loginBtn">Sign In</button>
+                        </form>
+
+                        <div id="loginStatus" class="message"></div>
+
+                        <p>
+                            <b>Forgot password?</b>
+                        </p>
+                        <p>
+                            <span>Don't have an account?</span>
+                            <b onclick="toggle()" class="pointer"> Sign up here</b>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- END SIGN IN -->
+        </div>
+        <!-- END FORM SECTION -->
+
+        <!-- CONTENT SECTION -->
+        <div class="row content-row">
+            <!-- SIGN IN CONTENT -->
+            <div class="col align-items-center flex-col">
+                <div>
+                    <div class="icon-large sign-in">
+                        <i class='bx bxs-book-open'></i>
+                    </div>
+                    <div class="text sign-in">
+                        <h2>Welcome Back!</h2>
+                        <p>Sign in to continue your learning journey and access all our courses.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- END SIGN IN CONTENT -->
+
+            <!-- SIGN UP CONTENT -->
+            <div class="col align-items-center flex-col">
+                <div>
+                    <div class="icon-large sign-up">
+                        <i class='bx bxs-graduation'></i>
+                    </div>
+                    <div class="text sign-up">
+                        <h2>Join Us!</h2>
+                        <p>Start your learning journey today and unlock thousands of amazing courses.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- END SIGN UP CONTENT -->
+        </div>
+        <!-- END CONTENT SECTION -->
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        let container = document.getElementById('container')
+
+        toggle = () => {
+            container.classList.toggle('sign-in')
+            container.classList.toggle('sign-up')
+        }
+
+        setTimeout(() => {
+            container.classList.add('sign-in')
+        }, 200)
+
+        // Toggle password visibility
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = event.currentTarget.querySelector('i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('bxs-hide');
+                icon.classList.add('bxs-show');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('bxs-show');
+                icon.classList.add('bxs-hide');
+            }
+        }
+
+        // Check password strength
+        function checkPasswordStrength() {
+            const password = document.getElementById('regPass').value;
+            const strengthIndicator = document.getElementById('strengthIndicator');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            
+            if (!password) {
+                strengthIndicator.style.display = 'none';
+                return;
+            }
+            
+            strengthIndicator.style.display = 'flex';
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[!@#$%^&*_\-+=..?,]/.test(password)) strength++;
+            
+            strengthFill.className = 'strength-fill';
+            if (strength <= 2) {
+                strengthFill.classList.add('weak');
+                strengthText.textContent = 'Weak';
+            } else if (strength <= 4) {
+                strengthFill.classList.add('medium');
+                strengthText.textContent = 'Medium';
+            } else {
+                strengthFill.classList.add('strong');
+                strengthText.textContent = 'Strong';
+            }
+        }
+
+        // Helper function to show messages
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `message ${type} show`;
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 4000);
+        }
+
+        // Auto-fill remember me
+        document.addEventListener('DOMContentLoaded', function() {
+            const rememberMe = document.getElementById('rememberMe');
+            const loginUser = document.getElementById('loginUser');
+            const savedUsername = localStorage.getItem('rememberMeUsername');
+            
+            if (savedUsername) {
+                loginUser.value = savedUsername;
+                rememberMe.checked = true;
+            }
+        });
+
+        // --- ACTUAL LOGIN API CALL ---
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const loginBtn = document.getElementById('loginBtn');
+            const originalText = loginBtn.textContent;
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner"></span> Signing in...';
+            
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 1. Save the JWT Token and User Info to Local Storage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('userRole', data.role);
+                    localStorage.setItem('username', data.username);
+                    
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMeUsername', username);
+                    } else {
+                        localStorage.removeItem('rememberMeUsername');
+                    }
+
+                    showMessage('loginStatus', 'Login successful! Redirecting...', 'success');
+
+                    // 2. Redirect based on role
+                    setTimeout(() => {
+                        if (data.role === 'ADMIN') window.location.replace('super-admin.html');
+                        else if (data.role === 'TEACHER') window.location.replace('teacher-dashboard.html');
+                        else window.location.replace('student-dashboard.html');
+                    }, 1000);
+
+                } else {
+                    // Invalid credentials
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = originalText;
+                    showMessage('loginStatus', data.message || 'Invalid username or password', 'error');
+                }
+            } catch (error) {
+                loginBtn.disabled = false;
+                loginBtn.textContent = originalText;
+                showMessage('loginStatus', 'Server is offline. Please try again later.', 'error');
+            }
+        }
+
+        // --- ACTUAL REGISTER API CALL ---
+        async function handleRegisterSubmit(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+            const passConfirm = document.getElementById('regPassConfirm').value;
+            const signupBtn = document.getElementById('signupBtn');
+            
+            // Validations
+            if (pass !== passConfirm) {
+                showMessage('regStatus', 'Passwords do not match!', 'error');
+                return;
+            }
+            if (pass.length < 8) {
+                showMessage('regStatus', 'Password must be at least 8 characters long!', 'error');
+                return;
+            }
+            
+            const originalText = signupBtn.textContent;
+            signupBtn.disabled = true;
+            signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: pass,
+                        role: 'STUDENT' // Automatically assigning the Student role for now
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('regStatus', 'Account created successfully! Please log in.', 'success');
+                    setTimeout(() => {
+                        signupBtn.disabled = false;
+                        signupBtn.textContent = originalText;
+                        toggle(); // Automatically flip back to the Sign In screen
+                        document.getElementById('loginUser').value = username; // Auto-fill username
+                        document.getElementById('loginPass').value = ''; // Clear password field
+                    }, 1500);
+                } else {
+                    signupBtn.disabled = false;
+                    signupBtn.textContent = originalText;
+                    showMessage('regStatus', data.message || 'Registration failed.', 'error');
+                }
+            } catch (error) {
+                signupBtn.disabled = false;
+                signupBtn.textContent = originalText;
+                showMessage('regStatus', 'Server is offline. Please try again later.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
