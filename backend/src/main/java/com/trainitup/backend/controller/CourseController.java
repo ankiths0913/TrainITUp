@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,17 @@ public class CourseController {
 
     // 3. CREATE COURSE
     @PostMapping
-    public ResponseEntity<?> createCourse(@RequestBody Course course) {
-        Course savedCourse = courseRepository.save(course);
-        return ResponseEntity.ok(savedCourse);
+    public ResponseEntity<?> createCourse(@Valid @RequestBody Course course) {
+        try {
+            if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Course title is required"));
+            }
+            Course savedCourse = courseRepository.save(course);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedCourse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("error", "Failed to create course: " + e.getMessage()));
+        }
     }
 
     // 4. DELETE COURSE (For Super Admin)
