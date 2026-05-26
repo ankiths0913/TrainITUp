@@ -1,0 +1,5 @@
+﻿body { background-color: #f8f9fa; }
+        .navbar-brand { font-weight: 800; letter-spacing: -1px; }
+        .course-card { border: none; border-radius: 15px; transition: 0.3s; height: 100%; }
+        .course-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .progress-bar { background-color: #08bd80; }

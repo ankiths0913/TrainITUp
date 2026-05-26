@@ -1,0 +1,443 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Course - TrainITup</title>
+    
+    <script>
+        // Security Guard: Teachers only!
+        if (localStorage.getItem('userRole') !== 'TEACHER') {
+            window.location.replace("auth.html");
+        }
+    </script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/create-course.css">
+    <link rel="stylesheet" href="../css/readability-fix.css">
+
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <h4><i class="bi bi-lock"></i> RAKIB</h4>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="teacher-dashboard.html"><i class="bi bi-book"></i> <span>My Courses</span></a></li>
+            <li><a href="#"><i class="bi bi-list"></i> <span>Course List</span></a></li>
+            <li><a href="#" class="active"><i class="bi bi-plus-circle"></i> <span>Create Course</span></a></li>
+            <li><a href="#"><i class="bi bi-people"></i> <span>Student List</span></a></li>
+            <li><a href="#"><i class="bi bi-bell"></i> <span>Send Notification</span></a></li>
+            <li><a href="#"><i class="bi bi-clipboard-check"></i> <span>Assignment</span></a></li>
+            <li><a href="#"><i class="bi bi-folder"></i> <span>Resources</span></a></li>
+            <li><a href="auth.html" onclick="localStorage.clear(); window.location.replace('auth.html'); return false;"><i class="bi bi-box-arrow-right"></i> <span>Log Out</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h3>Hello, <span id="userName">Teacher</span>!</h3>
+                <p>Good morning. Let's start learning</p>
+            </div>
+            <div class="user-profile">
+                <span id="userRole">Admin</span>
+                <img id="userAvatar" src="https://ui-avatars.com/api/?name=Teacher&background=4f46e5&color=fff" alt="User">
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('course-details')">
+                    <span class="tab-number">1</span>
+                    <span>Course Details</span>
+                </button>
+                <button class="tab-button" onclick="showTab('curriculum')">
+                    <span class="tab-number">2</span>
+                    <span>Curriculum</span>
+                </button>
+                <button class="tab-button" onclick="showTab('faq')">
+                    <span class="tab-number">3</span>
+                    <span>FAQ</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab 1: Course Details -->
+        <div id="course-details" class="tab-content active">
+            <h2 style="margin-bottom: 2rem; color: #1a1f3a;">Create New Course</h2>
+
+            <form id="courseForm">
+                <!-- Course Title -->
+                <div class="form-group-custom">
+                    <label class="form-label">Course Title</label>
+                    <input type="text" class="form-control-custom" placeholder="Graphic Design Bootcamp: Photoshop, Illustrator, InDesign" required>
+                </div>
+
+                <!-- Course Subtitle -->
+                <div class="form-group-custom">
+                    <label class="form-label">Course Subtitle</label>
+                    <textarea class="form-control-custom" placeholder="Learn with Rakib is an interesting platform that will teach you in more an interactive way" required></textarea>
+                </div>
+
+                <!-- Category and Sub-category -->
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <label class="form-label">Category</label>
+                        <select class="form-control-custom" required>
+                            <option value="">Select Category</option>
+                            <option value="design">Design</option>
+                            <option value="development">Development</option>
+                            <option value="business">Business</option>
+                            <option value="marketing">Marketing</option>
+                        </select>
+                    </div>
+                    <div class="form-group-custom">
+                        <label class="form-label">Sub Category</label>
+                        <select class="form-control-custom" required>
+                            <option value="">Select Sub Category</option>
+                            <option value="ui-ux">UI/UX Design</option>
+                            <option value="graphic">Graphic Design</option>
+                            <option value="web">Web Design</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Level and Price -->
+                <div class="form-row">
+                    <div class="form-group-custom">
+                        <label class="form-label">Level</label>
+                        <select class="form-control-custom" required>
+                            <option value="">Select Level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group-custom">
+                        <label class="form-label">Price</label>
+                        <input type="number" class="form-control-custom" placeholder="$250.00" step="0.01" required>
+                    </div>
+                </div>
+
+                <!-- Instructor -->
+                <div class="form-group-custom">
+                    <label class="form-label">Instructor</label>
+                    <input type="text" class="form-control-custom" placeholder="Rakib Ahmed" required>
+                </div>
+
+                <!-- Course Description -->
+                <div class="form-group-custom">
+                    <label class="form-label">Course Description</label>
+                    <textarea class="form-control-custom" placeholder="Learn with Rakib is an interesting platform..." required style="min-height: 120px;"></textarea>
+                </div>
+
+                <!-- What Students Will Learn -->
+                <div class="form-group-custom">
+                    <label class="form-label">What Students Will Learn?</label>
+                    <input type="text" class="form-control-custom" placeholder="Learn Figma Basics to Advanced Design">
+                    <input type="text" class="form-control-custom" placeholder="Build & test a full website design" style="margin-top: 0.8rem;">
+                    <button type="button" class="btn-add" style="margin-top: 0.8rem;" onclick="addLearnItem(this)">
+                        <i class="bi bi-plus"></i> Add More
+                    </button>
+                </div>
+
+                <!-- Cover Photo & Promo Video -->
+                <div class="form-row full">
+                    <div class="form-group-custom">
+                        <label class="form-label">Cover Photo</label>
+                        <div class="upload-area" onclick="document.getElementById('coverInput').click()">
+                            <i class="bi bi-image"></i>
+                            <p>Drag & Drop image or Browse</p>
+                            <small>Max. file size: 20MB</small>
+                            <input type="file" id="coverInput" hidden accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group-custom">
+                        <label class="form-label">Promotional Video</label>
+                        <div class="upload-area" onclick="document.getElementById('videoInput').click()">
+                            <i class="bi bi-play-circle"></i>
+                            <p>Drag & Drop video or Browse</p>
+                            <small>Max. file size: 500MB</small>
+                            <input type="file" id="videoInput" hidden accept="video/*">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uploaded Files -->
+                <div class="file-item">
+                    <div>
+                        <i class="bi bi-file-earmark-image" style="color: #4f46e5;"></i>
+                        <span style="margin-left: 0.8rem;">KDP Course Cover Image.jpg</span>
+                        <span style="color: #999; font-size: 0.8rem; margin-left: 1rem;">15 MB</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                        <span style="font-size: 0.85rem;">65%</span>
+                        <button type="button" class="btn-close"></button>
+                    </div>
+                </div>
+
+                <div class="file-item">
+                    <div>
+                        <i class="bi bi-play-circle" style="color: #08bd80;"></i>
+                        <span style="margin-left: 0.8rem;">KDP Course Video 123.Mp4</span>
+                        <span style="color: #999; font-size: 0.8rem; margin-left: 1rem;">51 MB</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: 100%;"></div>
+                        </div>
+                        <span style="font-size: 0.85rem;">100%</span>
+                        <button type="button" class="btn-close"></button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button type="button" class="btn-primary-custom" onclick="showTab('curriculum')">
+                        Save & Continue <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn-secondary-custom">
+                        <i class="bi bi-download"></i> Save as Draft
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tab 2: Curriculum -->
+        <div id="curriculum" class="tab-content">
+            <h2 style="margin-bottom: 2rem; color: #1a1f3a;">Curriculum</h2>
+
+            <!-- Module 1 -->
+            <div class="module">
+                <div class="module-header">
+                    <div>
+                        <div class="module-title">Module 1: Greetings and Introduction</div>
+                        <small style="color: #999; margin-top: 0.3rem; display: block;">Lesson 1-5</small>
+                    </div>
+                    <button type="button" class="btn-add" onclick="addLesson(this)">
+                        <i class="bi bi-plus"></i> Add Module
+                    </button>
+                </div>
+
+                <div class="lesson-item">
+                    <div>
+                        <strong>What is Amazon KDP?</strong>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="upload-area" style="width: 300px; padding: 1rem; margin: 0;" onclick="document.getElementById('fileInput1').click()">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <p>Upload File or Browse</p>
+                            <small>Views: PDF or Youtube Video 25 MB</small>
+                            <input type="file" id="fileInput1" hidden>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="file-item">
+                    <div>
+                        <i class="bi bi-play-circle" style="color: #08bd80;"></i>
+                        <span style="margin-left: 0.8rem;">Graphic Design Bootcamp.Mp4</span>
+                        <span style="color: #999; font-size: 0.8rem; margin-left: 1rem;">51 MB</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                        <span style="font-size: 0.85rem;">65%</span>
+                        <button type="button" class="btn-close"></button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                    <button type="button" class="btn-add" onclick="addLesson(this)">
+                        <i class="bi bi-plus"></i> Add Lesson
+                    </button>
+                    <button type="button" class="btn-add" onclick="addQuiz(this)">
+                        <i class="bi bi-plus"></i> Add Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="module">
+                <div class="module-header">
+                    <div>
+                        <div class="module-title">Module 2: Greetings and Introduction</div>
+                        <small style="color: #999; margin-top: 0.3rem; display: block;">Lesson 1-2</small>
+                    </div>
+                    <button type="button" class="btn-add" onclick="addModule(this)">
+                        <i class="bi bi-plus"></i> Add Module
+                    </button>
+                </div>
+
+                <div class="lesson-item">
+                    <div>
+                        <strong>What is Amazon KDP?</strong>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                    <button type="button" class="btn-add" onclick="addLesson(this)">
+                        <i class="bi bi-plus"></i> Add Lesson
+                    </button>
+                    <button type="button" class="btn-add" onclick="addQuiz(this)">
+                        <i class="bi bi-plus"></i> Add Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group" style="margin-top: 2rem;">
+                <button type="button" class="btn-primary-custom" onclick="showTab('faq')">
+                    Save & Continue <i class="bi bi-arrow-right"></i>
+                </button>
+                <button type="button" class="btn-secondary-custom">
+                    <i class="bi bi-download"></i> Save as Draft
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab 3: FAQ -->
+        <div id="faq" class="tab-content">
+            <h2 style="margin-bottom: 2rem; color: #1a1f3a;">Frequently Asked Question</h2>
+
+            <div class="faq-item active">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Do I need any prior experience or knowledge of interior design to take this course?</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>No prior experience is required! This course is designed for beginners and covers all fundamental concepts from the ground up.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>What topics will be covered in this course?</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>The course covers interior design basics, color theory, space planning, furniture selection, and practical design implementation.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>How long does the course take, and is it self-paced?</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, it's completely self-paced! Most students complete the course in 4-6 weeks depending on their commitment.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Will I have access to any resources or support during the course?</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! You'll have access to downloadable resources, design templates, and our community forum for support.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span>Is there a refund policy for the course?</span>
+                    <i class="bi bi-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We offer a 30-day money-back guarantee if you're not satisfied with the course content.</p>
+                </div>
+            </div>
+
+            <button type="button" class="btn-add" style="margin-top: 1.5rem;" onclick="addFAQ()">
+                <i class="bi bi-plus"></i> Add FAQ
+            </button>
+
+            <!-- Action Buttons -->
+            <div class="button-group" style="margin-top: 2rem;">
+                <button type="button" class="btn-primary-custom">
+                    <i class="bi bi-check-circle"></i> Publish
+                </button>
+                <button type="button" class="btn-secondary-custom">
+                    <i class="bi bi-download"></i> Save as Draft
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load user info from localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username') || 'Teacher';
+            const userRole = localStorage.getItem('userRole') || 'Admin';
+            
+            document.getElementById('userName').textContent = username;
+            document.getElementById('userRole').textContent = userRole;
+        });
+
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active to button
+            event.target.closest('.tab-button').classList.add('active');
+        }
+
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const item = element.closest('.faq-item');
+            item.classList.toggle('active');
+        }
+
+        // Add functions
+        function addLearnItem(btn) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control-custom';
+            input.placeholder = 'Enter learning objective';
+            input.style.marginTop = '0.8rem';
+            btn.parentElement.insertBefore(input, btn);
+        }
+
+        function addModule() {
+            alert('Module added!');
+        }
+
+        function addLesson() {
+            alert('Lesson added!');
+        }
+
+        function addQuiz() {
+            alert('Quiz added!');
+        }
+
+        function addFAQ() {
+            alert('FAQ added!');
+        }
+    </script>
+</body>
+</html>
+
