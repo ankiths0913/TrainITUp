@@ -25,7 +25,7 @@ const emptyCourse = {
   learningItems: ['']
 }
 
-const TeacherDashboard = () => {
+const TeacherDashboard = ({ initialSection = 'overview' }) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const coverInputRef = useRef(null)
@@ -34,7 +34,7 @@ const TeacherDashboard = () => {
   const teacherName = user?.username || localStorage.getItem('username') || 'Instructor'
   const userRole = user?.role || localStorage.getItem('userRole') || 'Teacher'
 
-  const [activeSection, setActiveSection] = useState('overview')
+  const [activeSection, setActiveSection] = useState(initialSection)
   const [activeTab, setActiveTab] = useState('course-details')
   const [openFaqs, setOpenFaqs] = useState(['experience'])
   const [courses, setCourses] = useState([])

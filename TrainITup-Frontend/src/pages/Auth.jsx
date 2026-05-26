@@ -113,6 +113,7 @@ const Auth = () => {
               placeholder="Full Name"
               value={registerForm.name}
               onChange={handleRegisterChange}
+              autoComplete="name"
               required
               disabled={loadingRegister}
             />
@@ -122,6 +123,7 @@ const Auth = () => {
               placeholder="Email"
               value={registerForm.email}
               onChange={handleRegisterChange}
+              autoComplete="email"
               required
               disabled={loadingRegister}
             />
@@ -131,6 +133,7 @@ const Auth = () => {
               placeholder="Password"
               value={registerForm.password}
               onChange={handleRegisterChange}
+              autoComplete="new-password"
               required
               disabled={loadingRegister}
             />
@@ -140,6 +143,7 @@ const Auth = () => {
               placeholder="Confirm Password"
               value={registerForm.confirmPassword}
               onChange={handleRegisterChange}
+              autoComplete="new-password"
               required
               disabled={loadingRegister}
             />
@@ -167,6 +171,7 @@ const Auth = () => {
               placeholder="Username"
               value={loginForm.username}
               onChange={handleLoginChange}
+              autoComplete="username"
               required
               disabled={loadingLogin}
             />
@@ -176,6 +181,7 @@ const Auth = () => {
               placeholder="Password"
               value={loginForm.password}
               onChange={handleLoginChange}
+              autoComplete="current-password"
               required
               disabled={loadingLogin}
             />
@@ -191,14 +197,14 @@ const Auth = () => {
           <div className="auth-toggle">
             <div className="auth-toggle-panel auth-toggle-left">
               <h1>Welcome Back!</h1>
-              <p class="text-white">To keep connected with us please login with your info</p>
+              <p className="text-white">To keep connected with us please login with your info</p>
               <button type="button" className="auth-ghost-btn" onClick={() => setIsActive(false)}>
                 Sign In
               </button>
             </div>
             <div className="auth-toggle-panel auth-toggle-right">
               <h1>Hello, Friend!</h1>
-              <p class="text-white">Enter your personal details and start journey with us</p>
+              <p className="text-white">Enter your personal details and start journey with us</p>
               <button type="button" className="auth-ghost-btn" onClick={() => setIsActive(true)}>
                 Sign Up
               </button>

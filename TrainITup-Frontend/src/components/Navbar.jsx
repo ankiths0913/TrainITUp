@@ -52,10 +52,10 @@ const Navbar = () => {
               <a className="nav-link text-dark" href="/#courses">Courses</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-dark" href="/#mentors">Mentors</a>
+              <Link className="nav-link text-dark" to="/mentors">Mentors</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-dark" href="/#pricing">Pricing</a>
+              <Link className="nav-link text-dark" to="/pricing">Pricing</Link>
             </li>
           </ul>
           {isAuthenticated ? (

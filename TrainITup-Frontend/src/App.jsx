@@ -6,7 +6,8 @@ import StudentDashboard from './pages/StudentDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import SuperAdmin from './pages/SuperAdmin'
 import Quiz from './pages/Quiz'
-import PlaceholderPage from './pages/PlaceholderPage'
+import { CommunityPage, MentorsPage, PricingPage, TestimonialsPage } from './pages/MarketingPages'
+import { CourseDetailPage, MyCoursesPage } from './pages/CoursePages'
 
 function App() {
   const futureFlags = {
@@ -19,12 +20,19 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/mentors" element={<PlaceholderPage title="Mentors" sourceFile="html/mentors.html" />} />
-        <Route path="/community" element={<PlaceholderPage title="Community" sourceFile="html/community.html" />} />
-        <Route path="/testimonials" element={<PlaceholderPage title="Testimonials" sourceFile="html/testimonials.html" />} />
-        <Route path="/pricing" element={<PlaceholderPage title="Pricing" sourceFile="html/pricing.html" />} />
-        <Route path="/course-detail" element={<PlaceholderPage title="Course Detail" sourceFile="html/course-detail.html" />} />
-        <Route path="/my-courses" element={<PlaceholderPage title="My Courses" sourceFile="html/my-courses.html" />} />
+        <Route path="/mentors" element={<MentorsPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/testimonials" element={<TestimonialsPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/course-detail" element={<CourseDetailPage />} />
+        <Route 
+          path="/my-courses" 
+          element={
+            <ProtectedRoute requiredRole="STUDENT">
+              <MyCoursesPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route 
           path="/quiz" 
           element={
@@ -33,7 +41,14 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        <Route path="/create-course" element={<PlaceholderPage title="Create Course" sourceFile="html/create-course.html" />} />
+        <Route 
+          path="/create-course" 
+          element={
+            <ProtectedRoute requiredRole="TEACHER">
+              <TeacherDashboard initialSection="create" />
+            </ProtectedRoute>
+          } 
+        />
         
         {/* Protected Routes */}
         <Route 

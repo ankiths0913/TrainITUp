@@ -74,6 +74,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:5173",      // Vite default port
             "http://127.0.0.1:5173",
+            "http://localhost:5174",      // Your current Vite port
+            "http://127.0.0.1:5174",      // Localhost IP variant
             "http://localhost:3000",      // Create React App default
             "http://127.0.0.1:3000",
             "http://localhost:5500",      // VS Code Live Server (legacy)
