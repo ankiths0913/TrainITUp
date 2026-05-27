@@ -43,7 +43,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Allow all OPTIONS requests for CORS preflight
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                
+
+                // Health check endpoint
+                .requestMatchers("/actuator/health/**").permitAll()
+
                 // Public endpoints - Anyone can access these
                 .requestMatchers("/api/auth/**").permitAll()                          // Register/Login
                 .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()         // Browse courses
