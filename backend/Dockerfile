@@ -15,7 +15,8 @@ COPY pom.xml .
 # Copy the source code.
 COPY src src
 
-# Make the Maven wrapper script executable.
+# Fix line endings in case the file was saved on Windows, then make executable
+RUN sed -i 's/\r$//' mvnw
 RUN chmod +x mvnw
 
 # Build the Spring Boot application into an executable JAR.
