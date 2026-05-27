@@ -4,7 +4,9 @@ import { useAuth } from '../context/AuthContext'
 import '/css/main.css'
 import '/css/super-admin.css'
 
-const API_BASE = 'http://localhost:8080/api/auth'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+const AUTH_API = `${API_BASE}/api/auth`
+const COURSES_API = `${API_BASE}/api/courses`
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: 'bi-speedometer2' },
@@ -47,7 +49,7 @@ const SuperAdmin = () => {
 
   const checkBackendHealth = async () => {
     try {
-      await fetch(`${API_BASE}/stats`, {
+      await fetch(`${AUTH_API}/stats`, {
         method: 'GET',
         headers: getAuthHeaders()
       })
@@ -59,7 +61,7 @@ const SuperAdmin = () => {
 
   const loadStats = async () => {
     try {
-      const res = await fetch(`${API_BASE}/stats`, { headers: getAuthHeaders() })
+      const res = await fetch(`${AUTH_API}/stats`, { headers: getAuthHeaders() })
 
       if (res.status === 401 || res.status === 403) {
         setIsAuthForbidden(true)
@@ -82,7 +84,7 @@ const SuperAdmin = () => {
 
   const loadAllUsers = async () => {
     try {
-      const res = await fetch(`${API_BASE}/users`, { headers: getAuthHeaders() })
+      const res = await fetch(`${AUTH_API}/users`, { headers: getAuthHeaders() })
 
       if (res.status === 401 || res.status === 403) {
         setIsAuthForbidden(true)
@@ -111,14 +113,14 @@ const SuperAdmin = () => {
 
   const loadAdminCourses = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/courses', {
+      const res = await fetch(COURSES_API, {
         headers: getAuthHeaders()
       })
 
       if (!res.ok) throw new Error(`Courses API returned ${res.status}`)
 
       const coursesList = await res.json()
-      const usersRes = await fetch(`${API_BASE}/users`, {
+      const usersRes = await fetch(`${AUTH_API}/users`, {
         headers: getAuthHeaders()
       })
       const users = usersRes.ok ? await usersRes.json() : []
@@ -168,7 +170,7 @@ const SuperAdmin = () => {
     if (!confirm('Confirm: This user will be permanently removed from the platform.')) return
 
     try {
-      const res = await fetch(`${API_BASE}/users/${userId}`, {
+      const res = await fetch(`${AUTH_API}/users/${userId}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       })
@@ -187,7 +189,7 @@ const SuperAdmin = () => {
     if (!confirm('ADMIN OVERRIDE: Are you sure you want to permanently delete this course? This action cannot be undone.')) return
 
     try {
-      const res = await fetch(`http://localhost:8080/api/courses/${courseId}`, {
+      const res = await fetch(`${COURSES_API}/${courseId}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       })
@@ -221,7 +223,7 @@ const SuperAdmin = () => {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/users/${selectedUser.id}/toggle-role`, {
+      const res = await fetch(`${AUTH_API}/users/${selectedUser.id}/toggle-role`, {
         method: 'PUT',
         headers: getAuthHeaders()
       })

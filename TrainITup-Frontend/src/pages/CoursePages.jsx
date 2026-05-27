@@ -3,9 +3,10 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
-const API_COURSE_BASE = 'http://localhost:8080/api/courses'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+const API_COURSE_BASE = `${API_BASE}/api/courses`
 const API_COURSES_ALL = `${API_COURSE_BASE}/all`
-const ENROLL_API = 'http://localhost:8080/api/enrollments'
+const ENROLL_API = `${API_BASE}/api/enrollments`
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token')

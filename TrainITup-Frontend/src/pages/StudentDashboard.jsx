@@ -8,6 +8,8 @@ import '/css/main.css'
 import '/css/student-dashboard.css'
 import '/css/readability-fix.css'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
 const StudentDashboard = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
@@ -57,7 +59,7 @@ const StudentDashboard = () => {
 
   const loadStats = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/auth/stats', { headers: getAuthHeaders() })
+      const res = await fetch(`${API_BASE}/api/auth/stats`, { headers: getAuthHeaders() })
       if (!res.ok) return
       const data = await res.json()
       setStats(prev => ({
@@ -75,7 +77,7 @@ const StudentDashboard = () => {
   const loadEnrolledCourses = async () => {
     try {
       if (!userId) throw new Error('No user id')
-      const res = await fetch(`http://localhost:8080/api/courses/enrolled/${userId}`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API_BASE}/api/courses/enrolled/${userId}`, { headers: getAuthHeaders() })
       if (res.ok) {
         const data = await res.json()
         if (Array.isArray(data) && data.length) {
@@ -97,7 +99,7 @@ const StudentDashboard = () => {
 
   const loadAllCourses = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/courses', { headers: getAuthHeaders() })
+      const res = await fetch(`${API_BASE}/api/courses`, { headers: getAuthHeaders() })
       if (!res.ok) return
       const data = await res.json()
       setAllCourses(Array.isArray(data) ? data : [])
@@ -109,7 +111,7 @@ const StudentDashboard = () => {
   const loadOrders = async () => {
     try {
       if (!userId) throw new Error('Missing user session')
-      const res = await fetch(`http://localhost:8080/api/orders/student/${userId}`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API_BASE}/api/orders/student/${userId}`, { headers: getAuthHeaders() })
       if (res.ok) {
         const data = await res.json()
         if (Array.isArray(data)) {

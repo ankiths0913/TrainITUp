@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import '/css/main.css'
 import '/css/teacher-dashboard.css'
 
-const API_BASE = 'http://localhost:8080/api/courses'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+const COURSES_API = `${API_BASE}/api/courses`
 
 const navItems = [
   { id: 'overview', label: 'Overview', icon: 'bi-speedometer2' },
@@ -73,7 +74,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
     try {
       if (!teacherId) throw new Error('Missing teacher session')
 
-      const response = await axios.get(`${API_BASE}/teacher/${teacherId}`, {
+      const response = await axios.get(`${COURSES_API}/teacher/${teacherId}`, {
         headers: authHeaders()
       })
       const safeCourses = Array.isArray(response.data) ? response.data : []
@@ -130,7 +131,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
     setUpload({ name: file.name, size: (file.size / (1024 * 1024)).toFixed(2), progress: 0, status: 'uploading' })
 
     try {
-      const response = await axios.post(`${API_BASE}/upload`, formData, {
+      const response = await axios.post(`${COURSES_API}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           ...authHeaders()
@@ -183,7 +184,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
     }
 
     try {
-      await axios.post(API_BASE, courseData, {
+      await axios.post(COURSES_API, courseData, {
         headers: {
           'Content-Type': 'application/json',
           ...authHeaders()
@@ -208,7 +209,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
     if (!confirm('Are you sure you want to delete this course?')) return
 
     try {
-      await axios.delete(`${API_BASE}/${courseId}`, { headers: authHeaders() })
+      await axios.delete(`${COURSES_API}/${courseId}`, { headers: authHeaders() })
       await loadMyCourses()
     } catch (error) {
       console.error('Delete course failed:', error)
