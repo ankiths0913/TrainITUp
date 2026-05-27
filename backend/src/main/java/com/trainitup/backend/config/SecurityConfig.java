@@ -1,6 +1,7 @@
 package com.trainitup.backend.config;
 
 import com.trainitup.backend.util.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -66,27 +68,25 @@ public class SecurityConfig {
     }
 
     // Tells Spring Boot which external URLs are allowed to access the API
+    @Value("${cors.allowed-origins:}")
+    private String[] allowedOrigins;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Allow React dev servers on common ports
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5173",      // Vite default port
-            "http://127.0.0.1:5173",
-            "http://localhost:5174",      // Your current Vite port
-            "http://127.0.0.1:5174",      // Localhost IP variant
-            "http://localhost:3000",      // Create React App default
-            "http://127.0.0.1:3000",
-            "http://localhost:5500",      // VS Code Live Server (legacy)
-            "http://127.0.0.1:5500"
-        ));
-        
+
+        // Allow only configured origins; empty means no cross-origin access.
+        if (allowedOrigins != null && allowedOrigins.length > 0 && !allowedOrigins[0].isBlank()) {
+            configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        } else {
+            configuration.setAllowedOrigins(List.of());
+        }
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);  // Cache preflight for 1 hour
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

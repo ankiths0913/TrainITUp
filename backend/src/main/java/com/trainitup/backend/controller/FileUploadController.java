@@ -10,7 +10,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin(origins = "*")
 public class FileUploadController {
 
     @Autowired
