@@ -8,6 +8,13 @@ const API_COURSE_BASE = `${API_BASE}/api/courses`
 const API_COURSES_ALL = `${API_COURSE_BASE}/all`
 const ENROLL_API = `${API_BASE}/api/enrollments`
 
+const resolveUploadUrl = (value) => {
+  if (!value) return ''
+  if (/^https?:\/\//i.test(value)) return value
+  const normalized = value.startsWith('/') ? value : `/uploads/${value}`
+  return `${API_BASE}${normalized}`
+}
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token')
   return {
@@ -81,7 +88,7 @@ export const CourseDetailPage = () => {
                   ) : (
                     <iframe
                       id="videoPlayer"
-                      src={activeCourse.videoUrl || fallbackCourse.videoUrl}
+                      src={resolveUploadUrl(activeCourse.videoUrl || activeCourse.video_url || fallbackCourse.videoUrl)}
                       title={`${activeCourse.title || 'Course'} video player`}
                       allowFullScreen
                     ></iframe>
@@ -180,10 +187,13 @@ export const MyCoursesPage = () => {
                 <Link to="/" className="btn btn-success mt-2">Start Browsing</Link>
               </div>
             ) : (
-              courses.map(course => (
+              courses.map(course => {
+                const courseImageUrl = resolveUploadUrl(course.imageUrl || course.image_url)
+
+                return (
                 <div className="col-md-4 col-lg-3" key={course.id || course.title}>
                   <article className="card course-card shadow-sm h-100 border-0 rounded-4">
-                    <img src={course.imageUrl || '/assets/images/hero-img.jpg'} alt={course.title || 'Course'} className="card-img-top p-2 rounded-4" style={{ height: 160, objectFit: 'cover' }} />
+                    <img src={courseImageUrl || '/assets/images/hero-img.jpg'} alt={course.title || 'Course'} className="card-img-top p-2 rounded-4" style={{ height: 160, objectFit: 'cover' }} />
                     <div className="card-body d-flex flex-column">
                       <h2 className="h6 fw-bold mb-1 text-dark">{course.title || 'Untitled Course'}</h2>
                       <p className="text-muted small mb-3">By {course.educator || course.teacherName || 'TrainITup Mentor'}</p>
@@ -198,7 +208,8 @@ export const MyCoursesPage = () => {
                     </div>
                   </article>
                 </div>
-              ))
+                )
+              })
             )}
           </div>
         </div>

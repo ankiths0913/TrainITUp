@@ -35,8 +35,8 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            // 3. Return the public URL that the React frontend can use to display the image
-            return "http://localhost:8080/uploads/" + newFileName;
+            // 3. Return only the stored filename so callers can build URLs as needed
+            return newFileName;
 
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + originalFileName + ". Please try again!", ex);

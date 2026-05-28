@@ -10,6 +10,13 @@ import '/css/readability-fix.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 
+const resolveUploadUrl = (value) => {
+  if (!value) return ''
+  if (/^https?:\/\//i.test(value)) return value
+  const normalized = value.startsWith('/') ? value : `/uploads/${value}`
+  return `${API_BASE}${normalized}`
+}
+
 const StudentDashboard = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
@@ -236,11 +243,14 @@ ${result.feedback ? `Teacher Feedback:\n${result.feedback}\n\n` : ''}Generated b
   const calendarDates = [31, ...Array.from({ length: 30 }, (_, i) => i + 1)]
   const gradeColor = (grade) => grade === 'A' ? '#A5FFE8' : grade === 'B' ? '#FFD700' : grade === 'C' ? '#FFA500' : '#FF6B6B'
 
-  const CourseCard = ({ course, action = 'Continue' }) => (
+  const CourseCard = ({ course, action = 'Continue' }) => {
+    const courseImageUrl = resolveUploadUrl(course.imageUrl || course.image_url)
+
+    return (
     <div className="col-md-4">
       <div className="course-card">
-        {course.imageUrl ? (
-          <div className="course-card-header" style={{ backgroundImage: `url(${course.imageUrl})` }}>
+        {courseImageUrl ? (
+          <div className="course-card-header" style={{ backgroundImage: `url(${courseImageUrl})` }}>
             <span className="course-card-title">{course.title || course.name || 'Untitled Course'}</span>
           </div>
         ) : (
@@ -264,7 +274,8 @@ ${result.feedback ? `Teacher Feedback:\n${result.feedback}\n\n` : ''}Generated b
         </div>
       </div>
     </div>
-  )
+    )
+  }
 
 
   return (
