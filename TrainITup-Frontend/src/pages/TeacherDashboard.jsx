@@ -259,6 +259,13 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
     setPublishedResults(nextResults)
   }
 
+  const resolveCourseImageUrl = (imageUrl) => {
+    if (!imageUrl) return ''
+    if (/^https?:\/\//i.test(imageUrl)) return imageUrl
+    if (imageUrl.startsWith('/')) return `${API_BASE}${imageUrl}`
+    return `${API_BASE}/${imageUrl}`
+  }
+
   const CourseCard = ({ course, mock = false }) => (
     <div className="col-md-4">
       <div className="course-card">
@@ -280,7 +287,14 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
           </>
         ) : (
           <>
-            {course.imageUrl && <img src={course.imageUrl} className="card-img-top" style={{ height: 180, objectFit: 'cover' }} alt={course.title} />}
+            {resolveCourseImageUrl(course.imageUrl) && (
+              <img
+                src={resolveCourseImageUrl(course.imageUrl)}
+                className="card-img-top"
+                style={{ height: 180, objectFit: 'cover' }}
+                alt={course.title}
+              />
+            )}
             <div className="card-body p-4 course-card-body">
               <h6 className="fw-bold mb-2" style={{ color: 'var(--light-text)' }}>{course.title}</h6>
               <p style={{ color: '#999', fontSize: '0.85rem', margin: '0.5rem 0' }}>
