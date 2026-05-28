@@ -2,6 +2,7 @@ package com.trainitup.backend.controller;
 
 import com.trainitup.backend.model.Course;
 import com.trainitup.backend.repository.CourseRepository;
+import com.trainitup.backend.dto.CreateCourseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +40,26 @@ public class CourseController {
 
     // 3. CREATE COURSE
     @PostMapping
-    public ResponseEntity<?> createCourse(@Valid @RequestBody Course course) {
+    public ResponseEntity<?> createCourse(@Valid @RequestBody CreateCourseRequest request) {
         try {
-            if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
+            if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Course title is required"));
             }
+            Course course = new Course();
+            course.setTitle(request.getTitle());
+            course.setSubtitle(request.getSubtitle());
+            course.setDescription(request.getDescription());
+            course.setCategory(request.getCategory());
+            course.setSubCategory(request.getSubCategory());
+            course.setLevel(request.getLevel());
+            course.setPrice(request.getPrice());
+            course.setEducator(request.getEducator());
+            course.setLessons(request.getLessons() != null ? request.getLessons() : 0);
+            course.setImageUrl(request.getImageUrl());
+            course.setVideoUrl(request.getVideoUrl());
+            course.setLearningPoints(request.getLearningPoints());
+            course.setTeacherId(request.getTeacherId());
+
             Course savedCourse = courseRepository.save(course);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedCourse);
         } catch (Exception e) {
