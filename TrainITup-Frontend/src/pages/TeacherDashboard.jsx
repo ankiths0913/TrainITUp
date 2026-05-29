@@ -146,7 +146,15 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
         }
       })
 
-      const fileUrl = response?.data?.fileUrl || ''
+      let fileUrl = ''
+      if (typeof response.data === 'string') {
+        fileUrl = response.data
+      } else if (response.data) {
+        fileUrl = response.data.fileUrl || response.data.fileName || response.data.imageUrl || response.data.videoUrl || ''
+      }
+
+      console.log(`Backend returned ${type} URL:`, fileUrl)
+
       if (type === 'image') setUploadedCoverUrl(fileUrl)
       if (type === 'video') setUploadedVideoUrl(fileUrl)
       setUpload(prev => prev ? { ...prev, progress: 100, status: 'done' } : prev)
@@ -186,11 +194,9 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
       level: courseForm.level,
       imageUrl: coverUrl,
       videoUrl: videoUrl,
-      teacherId
+      teacherId: Number(teacherId)
     }
 
-    console.log('Course upload result', { coverUrl, videoUrl })
-    console.log('Course submit payload', courseData)
 
     const missingFields = []
     if (!courseData.title) missingFields.push('Title')
