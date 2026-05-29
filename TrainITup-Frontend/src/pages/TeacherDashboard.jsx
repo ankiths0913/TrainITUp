@@ -7,6 +7,7 @@ import '/css/teacher-dashboard.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 const COURSES_API = `${API_BASE}/api/courses`
+const COURSES_CREATE_API = `${API_BASE}/api/courses/add`
 
 const navItems = [
   { id: 'overview', label: 'Overview', icon: 'bi-speedometer2' },
@@ -184,7 +185,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
     }
 
     try {
-      await axios.post(COURSES_API, courseData, {
+      await axios.post(COURSES_CREATE_API, courseData, {
         headers: {
           'Content-Type': 'application/json',
           ...authHeaders()

@@ -9,29 +9,22 @@ public class CreateCourseRequest {
     @NotBlank(message = "Course title is required")
     private String title;
     
-    @NotBlank(message = "Course subtitle is required")
     private String subtitle;
     
-    @NotBlank(message = "Course description is required")
     private String description;
     
-    @NotBlank(message = "Category is required")
     private String category;
     
     private String subCategory;
     
-    @NotBlank(message = "Level is required")
     private String level;
     
-    @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be at least 0")
     private Double price;
     
-    @NotBlank(message = "Instructor name is required")
     private String educator;
     
-    @NotNull(message = "Number of lessons is required")
-    @Min(value = 1, message = "Lessons must be at least 1")
+    @Min(value = 0, message = "Lessons must be at least 0")
     private Integer lessons;
     
     private String imageUrl;
