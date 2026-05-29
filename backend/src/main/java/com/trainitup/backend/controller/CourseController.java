@@ -39,7 +39,7 @@ public class CourseController {
     }
 
     // 3. CREATE COURSE
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> createCourse(@Valid @RequestBody CreateCourseRequest request) {
         try {
             if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
