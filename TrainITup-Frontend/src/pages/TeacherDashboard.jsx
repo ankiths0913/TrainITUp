@@ -44,6 +44,8 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
   const [courseForm, setCourseForm] = useState({ ...emptyCourse, instructor: teacherName })
   const [coverUpload, setCoverUpload] = useState(null)
   const [videoUpload, setVideoUpload] = useState(null)
+  const [coverFile, setCoverFile] = useState(null)
+  const [videoFile, setVideoFile] = useState(null)
   const [uploadedCoverUrl, setUploadedCoverUrl] = useState('')
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState('')
   const [resultForm, setResultForm] = useState({
@@ -148,29 +150,47 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
       if (type === 'image') setUploadedCoverUrl(fileUrl)
       if (type === 'video') setUploadedVideoUrl(fileUrl)
       setUpload(prev => prev ? { ...prev, progress: 100, status: 'done' } : prev)
+      return fileUrl
     } catch (error) {
       console.error('Upload failed:', error)
       setUpload(prev => prev ? { ...prev, status: 'failed' } : prev)
+      throw error
     }
   }
 
   const handleFileChange = (event, type) => {
     const file = event.target.files?.[0]
     if (!file) return
+    if (type === 'image') setCoverFile(file)
+    if (type === 'video') setVideoFile(file)
     uploadFileToBackend(file, type)
   }
 
   const submitCourse = async () => {
+    let coverUrl = uploadedCoverUrl
+    let videoUrl = uploadedVideoUrl
+
+    if (coverFile && !coverUrl) {
+      coverUrl = await uploadFileToBackend(coverFile, 'image')
+    }
+
+    if (videoFile && !videoUrl) {
+      videoUrl = await uploadFileToBackend(videoFile, 'video')
+    }
+
     const courseData = {
       title: courseForm.title.trim(),
       description: courseForm.description.trim(),
       price: courseForm.price,
       category: courseForm.category,
       level: courseForm.level,
-      imageUrl: uploadedCoverUrl,
-      videoUrl: uploadedVideoUrl,
+      imageUrl: coverUrl,
+      videoUrl: videoUrl,
       teacherId
     }
+
+    console.log('Course upload result', { coverUrl, videoUrl })
+    console.log('Course submit payload', courseData)
 
     const missingFields = []
     if (!courseData.title) missingFields.push('Title')
@@ -196,6 +216,8 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
       setCourseForm({ ...emptyCourse, instructor: teacherName })
       setUploadedCoverUrl('')
       setUploadedVideoUrl('')
+      setCoverFile(null)
+      setVideoFile(null)
       setCoverUpload(null)
       setVideoUpload(null)
       setActiveSection('courses')
