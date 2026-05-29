@@ -79,6 +79,7 @@ public class CourseController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error deleting course: " + e.getMessage());
         }
     }

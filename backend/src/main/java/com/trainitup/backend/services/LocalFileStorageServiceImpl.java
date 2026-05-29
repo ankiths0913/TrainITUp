@@ -20,6 +20,7 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
         }
     }
@@ -39,6 +40,7 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
             return newFileName;
 
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new RuntimeException("Could not store file " + originalFileName + ". Please try again!", ex);
         }
     }
