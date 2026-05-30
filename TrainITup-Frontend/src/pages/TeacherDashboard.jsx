@@ -129,6 +129,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
   const uploadFileToBackend = async (file, type) => {
     const setUpload = type === 'image' ? setCoverUpload : setVideoUpload
     const formData = new FormData()
+    // Note: Make sure 'file' matches the @RequestParam name in your Spring Boot /upload controller!
     formData.append('file', file)
 
     setUpload({ name: file.name, size: (file.size / (1024 * 1024)).toFixed(2), progress: 0, status: 'uploading' })
@@ -146,14 +147,16 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
         }
       })
 
+      // Smartly extract the filename whether Spring Boot sent a String or JSON
       let fileUrl = ''
       if (typeof response.data === 'string') {
-        fileUrl = response.data
+        fileUrl = response.data // Catches the raw filename string
       } else if (response.data) {
+        // Catches the filename if Spring Boot sent it wrapped in a JSON object
         fileUrl = response.data.fileUrl || response.data.fileName || response.data.imageUrl || response.data.videoUrl || ''
       }
 
-      console.log(`Backend returned ${type} URL:`, fileUrl)
+      console.log(`Backend returned ${type} URL:`, fileUrl) // Debugging check
 
       if (type === 'image') setUploadedCoverUrl(fileUrl)
       if (type === 'video') setUploadedVideoUrl(fileUrl)
