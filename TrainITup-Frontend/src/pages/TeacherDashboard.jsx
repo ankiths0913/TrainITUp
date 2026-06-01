@@ -294,8 +294,7 @@ const TeacherDashboard = ({ initialSection = 'overview' }) => {
   const resolveCourseImageUrl = (imageUrl) => {
     if (!imageUrl) return ''
     if (/^https?:\/\//i.test(imageUrl)) return imageUrl
-    if (imageUrl.startsWith('/')) return `${API_BASE}${imageUrl}`
-    return `${API_BASE}/${imageUrl}`
+    return `${API_BASE}/uploads/${imageUrl.replace(/^\//, '')}`
   }
 
   const CourseCard = ({ course, mock = false }) => (
